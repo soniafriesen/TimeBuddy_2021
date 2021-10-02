@@ -1,0 +1,34 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                          Company Statements                         +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{addcompany(name:"Test Company", email:"testemail@tester.ca",payoption:"monthly")
+	{name,email,payoption,payamount,startdate,enddate}
+}
+{getspecificcompany(name:"Test Company",email:"testemail@tester.ca"){name,email,payoption,payamount,startdate,enddate}}
+mutation{updatecompany(name:"Test Company",email:"tempCEmail@abc.ca",payoption:"annual") {name,email,payoption,payamount,startdate,enddate}}
+{endcompanypayment(name:"Test Company",email:"tempCEmail@abc.ca"){name,email,payoption,payamount,startdate,enddate}}
+{deletespecificcompany(name:"Test Company",email:"tempCEmail@abc.ca")}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                          Manager Statements                         +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{addmanager(compname:"Test Company", department:"IT",firstname:"Tester",lastname:"App",email:"ta@test.ca",dob:"1978-11-05")
+  {compname,department,empid,firstname,lastname,email,dob,startdate}}
+{getallmanagers(compname:"Test Company"){compname,department,empid,firstname,lastname,email,dob,startdate}}
+{getspecificmanager(empid:1100){compname,department,empid,firstname,lastname,email,dob,startdate}}
+mutation{updatemanageremail(empid:1100,email:"newtest@email.ca"){compname,department,empid,firstname,lastname,email,dob,startdate}}
+mutation{updatemanagerdepartment(empid:1100,department:"HR"){compname,department,empid,firstname,lastname,email,dob,startdate}}
+{deletemanager(empid:1100)}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                          Employee Statements                         +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+mutation{addemployee(compname:"Test Company",managerid:3865,department:"IT",firstname:"EMPTest",lastname:"Stanley",email:"ets@avc.ca",dob:"1957-12-09")
+}
+{getallemployees(compname:"Test Company"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
+{getspecificemployee(empid:1991){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
+mutation{updateemployeeemail(empid:1991,email:"stanleyET@abc.ca"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
+mutation{updateemployeedepartment(empid:1991,department:"Security"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
+{deleteemployee(empid:1991)}

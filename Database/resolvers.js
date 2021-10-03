@@ -1,5 +1,12 @@
 const dbRtns = require("./dbroutines");
-const { companies, managers, employees } = require("./config");
+const {
+  companies,
+  managers,
+  employees,
+  shifts,
+  pool,
+  meetings,
+} = require("./config");
 const resolvers = {
   /**************************************************************************************/
   /*                                company Functions                                   */
@@ -393,6 +400,308 @@ const resolvers = {
         _id: employee._id,
       });
       return `Deleted employee #${employee.empid}`;
+    }
+  },
+  /**************************************************************************************/
+  /*                                  shift Functions                                   */
+  /**************************************************************************************/
+  getallshifts: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shift = await dbRtns.findAll(db, shifts, {
+      compname: `${args.compname}`,
+    });
+    if (!shift) return `shift does not exist in company ${args.compname}`;
+    else return shift;
+  },
+  getspecificshift: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shift = await dbRtns.findOne(db, shifts, {
+      shiftid: args.shiftid,
+    });
+    if (!shift) return `shift does not exist in collection`;
+    else return shift;
+  },
+  addshift: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let min = Math.ceil(1);
+    let max = Math.floor(9999999);
+    let random = Math.floor(Math.random() * (max - min + 1)) + min;
+    //check if there already is a empid
+    //check if there already is a shiftid
+    let shift = await dbRtns.findAll(db, shifts, {
+      compname: `${args.compname}`,
+    });
+
+    if (shift) {
+      let doesExist = true;
+      while (doesExist) {
+        let yes = shift.includes(random);
+        if ((doesExist = yes)) {
+          random = Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+      }
+      //make sure all codes are unique
+    }
+    let newshift = `{"compname":"${args.compname}","shiftid":${random},"empid":${args.empid}, "date": "${args.date}", "starttime": "${args.starttime}", "endtime": "${args.endtime}"}`;
+    newshift = JSON.parse(newshift);
+    let found = await dbRtns.findOne(db, shifts, {
+      shiftid: random,
+      empid: args.empid,
+    });
+    if (!found) {
+      let results = await dbRtns.addOne(db, shifts, newshift);
+      return results.insertedCount === 1 ? newshift : null;
+    } else
+      return `Shift ${found.shiftid} already assigned to employee ${found.empid}`;
+  },
+  updateshiftstarttime: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shift = await dbRtns.findOne(db, shifts, {
+      shiftid: args.shiftid,
+    });
+    if (!shift) return `shift does not exist in collection`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      shifts,
+      { _id: shift._id },
+      {
+        starttime: `${args.starttime}`,
+      }
+    );
+    shift = await dbRtns.findOne(db, shifts, {
+      shiftid: args.shiftid,
+    });
+    return shift;
+  },
+  updateshiftendtime: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shift = await dbRtns.findOne(db, shifts, {
+      shiftid: args.shiftid,
+    });
+    if (!shift) return `shift does not exist in collection`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      shifts,
+      { _id: shift._id },
+      {
+        endtime: `${args.endtime}`,
+      }
+    );
+    shift = await dbRtns.findOne(db, shifts, {
+      shiftid: args.shiftid,
+    });
+    return shift;
+  },
+  switchshift: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shift = await dbRtns.findOne(db, shifts, {
+      shiftid: args.shiftid,
+    });
+    if (!shift) return `shift does not exist in collection`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      shifts,
+      { _id: shift._id },
+      {
+        empid: args.empid,
+      }
+    );
+    shift = await dbRtns.findOne(db, shifts, {
+      shiftid: args.shiftid,
+    });
+    return shift;
+  },
+  deleteshift: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shift = await dbRtns.findOne(db, shifts, {
+      shiftid: args.shiftid,
+    });
+    if (!shift) return `shift does not exist in collection`;
+    else {
+      let deletedmanager = await dbRtns.deleteOne(db, shifts, {
+        _id: shift._id,
+      });
+      return `Deleted shift #${shift.shiftid}`;
+    }
+  },
+  /**************************************************************************************/
+  /*                              shift pool Functions                                  */
+  /**************************************************************************************/
+  getallinpool: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shiftpool = await dbRtns.findAll(db, pool, {
+      compname: `${args.compname}`,
+    });
+    if (!shiftpool)
+      return `shift does not exist in ${args.compname} shift pool`;
+    else return shiftpool;
+  },
+  getspecificpoolshift: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shiftpool = await dbRtns.findOne(db, pool, {
+      shiftid: args.shiftid,
+    });
+    if (!shiftpool) return `shift does not exist in collection`;
+    else return shiftpool;
+  },
+  addshifttopool: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shift = await dbRtns.findOne(db, shifts, { shiftid: args.shiftid });
+    let newshift = `{"compname":"${args.compname}","shiftid":${args.shiftid}, "date": "${shift.date}", "starttime": "${shift.starttime}", "endtime": "${shift.endtime}"}`;
+    newshift = JSON.parse(newshift);
+    //remove shift from the shift colleciton to indicate it is not a scheduled shift
+    let deleteshift = await dbRtns.deleteOne(db, shifts, {
+      shiftid: shift.shiftid,
+    });
+    let found = await dbRtns.findOne(db, pool, {
+      shiftid: shift.shiftid,
+    });
+    if (!found) {
+      let results = await dbRtns.addOne(db, pool, newshift);
+      return results.insertedCount === 1 ? newshift : null;
+    } else return `Shift ${found.shiftid} already in the pool`;
+  },
+  removeshiftfrompool: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let shiftpool = await dbRtns.findOne(db, pool, {
+      shiftid: args.shiftid,
+    });
+    if (!shiftpool) return `shift does not exist in pool`;
+    else {
+      //add the new assigned empoyee to shift
+      //give it a new shiftid just incase another shift picked it up
+      let min = Math.ceil(1);
+      let max = Math.floor(9999999);
+      let random = Math.floor(Math.random() * (max - min + 1)) + min;
+      let shift = await dbRtns.findAll(db, shifts, {
+        compname: `${shiftpool.compname}`,
+      });
+      if (shift) {
+        let doesExist = true;
+        while (doesExist) {
+          let yes = shift.includes(random);
+          if ((doesExist = yes)) {
+            random = Math.floor(Math.random() * (max - min + 1)) + min;
+          }
+        }
+        //make sure all codes are unique
+        let newshift = `{"compname":"${shiftpool.compname}","shiftid":${random},"empid":${args.empid}, "date": "${shiftpool.date}", "starttime": "${shiftpool.starttime}", "endtime": "${shiftpool.endtime}"}`;
+        newshift = JSON.parse(newshift);
+        let found = await dbRtns.findOne(db, shifts, {
+          shiftid: random,
+          empid: args.empid,
+        });
+        if (!found) {
+          let results = await dbRtns.addOne(db, shifts, newshift);
+          if (results.insertedCount === 1 ? newshift : null);
+
+          let deletedmanager = await dbRtns.deleteOne(db, pool, {
+            _id: shiftpool._id,
+          });
+          return `Removed shift  #${shiftpool.shiftid} from pool`;
+        }
+      }
+    }
+  },
+  /**************************************************************************************/
+  /*                              Meetings Functions                                    */
+  /**************************************************************************************/
+  postameeting: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let min = Math.ceil(1);
+    let max = Math.floor(9999999);
+    let random = Math.floor(Math.random() * (max - min + 1)) + min;
+    let meeting = await dbRtns.findAll(db, meetings, {
+      compname: `${args.compname}`,
+    });
+
+    if (meeting) {
+      let doesExist = true;
+      while (doesExist) {
+        let yes = meeting.includes(random);
+        if ((doesExist = yes)) {
+          random = Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+      }
+      //make sure all codes are unique
+    }
+    let newmeeting = `{"compname":"${args.compname}","meetingid":${random},"empid":${args.empid}, "date": "${args.date}", "starttime": "${args.starttime}", "message": "${args.message}"}`;
+    newmeeting = JSON.parse(newmeeting);
+    let found = await dbRtns.findOne(db, meetings, {
+      meetingid: random,
+      empid: args.empid,
+    });
+    if (!found) {
+      let results = await dbRtns.addOne(db, meetings, newmeeting);
+      return results.insertedCount === 1 ? newmeeting : null;
+    } else return `meeting ${found.meetingid} already on message board`;
+  },
+  getallmeetings: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let meeting = await dbRtns.findAll(db, meetings, {
+      compname: `${args.compname}`,
+    });
+    if (!meeting)
+      return `meeting does not exist in ${args.compname} meeting board`;
+    else return meeting;
+  },
+  showspecificmeeting: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let meeting = await dbRtns.findOne(db, meetings, {
+      meetingid: args.meetingid,
+    });
+    if (!meeting) return `meeting does not exist in meeting board`;
+    else return meeting;
+  },
+  changemeetingtime: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let meeting = await dbRtns.findOne(db, meetings, {
+      meetingid: args.meetingid,
+    });
+    if (!meeting) return `meeting does not exist in collection`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      meetings,
+      { _id: meeting._id },
+      {
+        starttime: `${args.starttime}`,
+      }
+    );
+    meeting = await dbRtns.findOne(db, meetings, {
+      meetingid: args.meetingid,
+    });
+    return meeting;
+  },
+  changemeetingdate: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let meeting = await dbRtns.findOne(db, meetings, {
+      meetingid: args.meetingid,
+    });
+    if (!meeting) return `meeting does not exist in collection`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      meetings,
+      { _id: meeting._id },
+      {
+        date: `${args.date}`,
+      }
+    );
+    meeting = await dbRtns.findOne(db, meetings, {
+      meetingid: args.meetingid,
+    });
+    return meeting;
+  },
+  removemeeting: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let meeting = await dbRtns.findOne(db, meetings, {
+      meetingid: args.meetingid,
+    });
+    if (!meeting) return `meeting does not exist in collection`;
+    else {
+      let deletedmanager = await dbRtns.deleteOne(db, meetings, {
+        _id: meeting._id,
+      });
+      return `Deleted meeting post #${meeting.meetingid}`;
     }
   },
 };

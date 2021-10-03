@@ -23,8 +23,9 @@ mutation{updatemanagerdepartment(empid:1100,department:"HR"){compname,department
 {deletemanager(empid:1100)}
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-+                          Employee Statements                         +
++                          Employee Statements                        +
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 mutation{addemployee(compname:"Test Company",managerid:3865,department:"IT",firstname:"EMPTest",lastname:"Stanley",email:"ets@avc.ca",dob:"1957-12-09")
 }
 {getallemployees(compname:"Test Company"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
@@ -32,3 +33,37 @@ mutation{addemployee(compname:"Test Company",managerid:3865,department:"IT",firs
 mutation{updateemployeeemail(empid:1991,email:"stanleyET@abc.ca"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
 mutation{updateemployeedepartment(empid:1991,department:"Security"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
 {deleteemployee(empid:1991)}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                           Shift Statements                          +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{addshift(compname:"Test Company",empid:1923,date:"Dec 22nd 2021",starttime:"1:00PM",endtime:"10:00PM")
+  {compname,shiftid,empid,date,starttime,endtime}}
+{getallshifts(compname:"Test Company"){compname,shiftid,empid,date,starttime,endtime}}
+{getspecificshift(shiftid:2267413){compname,shiftid,empid,date,starttime,endtime}}
+mutation{updateshiftstarttime(shiftid:2267413,starttime:"12:00PM"){compname,shiftid,empid,date,starttime,endtime}}
+mutation{updateshiftendtime(shiftid:2267413,endtime:"8:30PM"){compname,shiftid,empid,date,starttime,endtime}}
+mutation{switchshift(shiftid:2267413,empid:2229){compname,shiftid,empid,date,starttime,endtime}}
+{deleteshift(shiftid:6538280)}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                       Shift Pool Statements                         +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{addshifttopool(compname:"Test Company",shiftid:7064135){compname,shiftid,date,starttime,endtime}}
+{getallinpool(compname:"Test Company"){compname,shiftid,date,starttime,endtime}}  
+{getspecificpoolshift(shiftid:7064135){compname,shiftid,date,starttime,endtime}}
+{removeshiftfrompool(shiftid:4518016,empid:2435)}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                        Meetings Statements                          +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{postameeting(compname:"Test Company",empid:8575,date:"Dec 14th 2021",starttime:"9:30AM",message:"Testing meeting boards")
+  {compname,meetingid,empid,starttime,message}}
+{getallmeetings(compname:"Test Company"){compname,meetingid,empid,date,starttime,message}}
+{showspecificmeeting(meetingid:4154651){compname,meetingid,empid,date,starttime,message}}
+mutation{changemeetingdate(meetingid:4154651, date:"Nov 29th 2021"){compname,meetingid,empid,date,starttime,message}}
+mutation{changemeetingtime(meetingid:4154651,starttime:"11:30AM"){compname,meetingid,empid,date,starttime,message}}
+{removemeeting(meetingid:615021)}  

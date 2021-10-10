@@ -4,6 +4,7 @@ import Reorder from "@material-ui/icons/Reorder";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme";
 import Home from "./components/home";
+import Signup from "./components/signup"
 import {
   Toolbar,
   AppBar,
@@ -40,8 +41,11 @@ const App = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem component={Link} to="/home" onClick={handleClose}>
-              Home
+          <MenuItem component={Link} to="/home" onClick={handleClose}>
+            Home
+          </MenuItem>
+            <MenuItem component={Link} to="/signup" onClick={handleClose}>
+              Signup
             </MenuItem>
           </Menu>
         </Toolbar>
@@ -49,6 +53,7 @@ const App = () => {
       <div>
         <Route exact path="/" render={() => <Redirect to="/home" />} />
         <Route path="/home" component={Home} />
+        <Route path="/signup" component={Signup} />
       </div>
     </MuiThemeProvider>
   );

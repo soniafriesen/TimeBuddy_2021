@@ -159,12 +159,10 @@ const resolvers = {
   /**************************************************************************************/
   /*                               managers Function                                    */
   /**************************************************************************************/
-  getallmanagers: async (args) => {
+  getallmanagers: async () => {
     let db = await dbRtns.getDBInstance();
-    let manager = await dbRtns.findAll(db, managers, {
-      compname: `${args.compname}`,
-    });
-    if (!manager) return `manager does not exist in company ${args.compname}`;
+    let manager = await dbRtns.findAll(db, managers);
+    if (!manager) return `manager does not exist in company `;
     else return manager;
   },
   getspecificmanager: async (args) => {
@@ -213,7 +211,7 @@ const resolvers = {
       }
       //make sure all codes are unique
     }
-    let newmanager = `{"compname":"${args.compname}","department":"${args.department}", "empid": ${random}, "firstname": "${args.firstname}", "lastname": "${args.lastname}", "email":"${args.email}", "dob": "${args.dob}", "startdate":"${startdate}"}`;
+    let newmanager = `{"department":"${args.department}", "empid": ${random}, "firstname": "${args.firstname}", "lastname": "${args.lastname}", "email":"${args.email}", "dob": "${args.dob}", "startdate":"${startdate}"}`;
     newmanager = JSON.parse(newmanager);
     let found = await dbRtns.findOne(db, managers, {
       email: `${args.email}`,
@@ -277,11 +275,9 @@ const resolvers = {
   /**************************************************************************************/
   /*                                 employee Functions                                 */
   /**************************************************************************************/
-  getallemployees: async (args) => {
+  getallemployees: async () => {
     let db = await dbRtns.getDBInstance();
-    let employee = await dbRtns.findAll(db, employees, {
-      compname: `${args.compname}`,
-    });
+    let employee = await dbRtns.findAll(db, employees);
     if (!employee) return `employee does not exist in company ${args.compname}`;
     else return employee;
   },
@@ -341,7 +337,7 @@ const resolvers = {
       }
       //make sure all codes are unique
     }
-    let newemployee = `{"compname":"${args.compname}","managerid":${args.managerid},"department":"${args.department}", "empid": ${random}, "firstname": "${args.firstname}", "lastname": "${args.lastname}", "email":"${args.email}", "dob": "${args.dob}", "startdate":"${startdate}"}`;
+    let newemployee = `{"managerid":${args.managerid},"department":"${args.department}", "empid": ${random}, "firstname": "${args.firstname}", "lastname": "${args.lastname}", "email":"${args.email}", "dob": "${args.dob}", "startdate":"${startdate}"}`;
     newemployee = JSON.parse(newemployee);
     let found = await dbRtns.findOne(db, employees, {
       email: `${args.email}`,
@@ -407,9 +403,7 @@ const resolvers = {
   /**************************************************************************************/
   getallshifts: async (args) => {
     let db = await dbRtns.getDBInstance();
-    let shift = await dbRtns.findAll(db, shifts, {
-      compname: `${args.compname}`,
-    });
+    let shift = await dbRtns.findAll(db, shifts);
     if (!shift) return `shift does not exist in company ${args.compname}`;
     else return shift;
   },
@@ -442,7 +436,7 @@ const resolvers = {
       }
       //make sure all codes are unique
     }
-    let newshift = `{"compname":"${args.compname}","shiftid":${random},"empid":${args.empid}, "date": "${args.date}", "starttime": "${args.starttime}", "endtime": "${args.endtime}"}`;
+    let newshift = `{"shiftid":${random},"empid":${args.empid}, "date": "${args.date}", "starttime": "${args.starttime}", "endtime": "${args.endtime}"}`;
     newshift = JSON.parse(newshift);
     let found = await dbRtns.findOne(db, shifts, {
       shiftid: random,
@@ -529,9 +523,7 @@ const resolvers = {
   /**************************************************************************************/
   getallinpool: async (args) => {
     let db = await dbRtns.getDBInstance();
-    let shiftpool = await dbRtns.findAll(db, pool, {
-      compname: `${args.compname}`,
-    });
+    let shiftpool = await dbRtns.findAll(db, pool);
     if (!shiftpool)
       return `shift does not exist in ${args.compname} shift pool`;
     else return shiftpool;
@@ -547,7 +539,7 @@ const resolvers = {
   addshifttopool: async (args) => {
     let db = await dbRtns.getDBInstance();
     let shift = await dbRtns.findOne(db, shifts, { shiftid: args.shiftid });
-    let newshift = `{"compname":"${args.compname}","shiftid":${args.shiftid}, "date": "${shift.date}", "starttime": "${shift.starttime}", "endtime": "${shift.endtime}"}`;
+    let newshift = `{"shiftid":${args.shiftid}, "date": "${shift.date}", "starttime": "${shift.starttime}", "endtime": "${shift.endtime}"}`;
     newshift = JSON.parse(newshift);
     //remove shift from the shift colleciton to indicate it is not a scheduled shift
     let deleteshift = await dbRtns.deleteOne(db, shifts, {
@@ -636,13 +628,10 @@ const resolvers = {
       return results.insertedCount === 1 ? newmeeting : null;
     } else return `meeting ${found.meetingid} already on message board`;
   },
-  getallmeetings: async (args) => {
+  getallmeetings: async () => {
     let db = await dbRtns.getDBInstance();
-    let meeting = await dbRtns.findAll(db, meetings, {
-      compname: `${args.compname}`,
-    });
-    if (!meeting)
-      return `meeting does not exist in ${args.compname} meeting board`;
+    let meeting = await dbRtns.findAll(db, meetings);
+    if (!meeting) return `meeting does not exist in meeting board`;
     else return meeting;
   },
   showspecificmeeting: async (args) => {

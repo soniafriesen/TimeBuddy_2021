@@ -1,23 +1,25 @@
-import React, { Component } from "react";
+import React from "react";
+import { TextField, Button, Typography } from '@material-ui/core'
 
-export default class SignUp extends Component {
-    render() {
+export default function SignUp() {
+    
         return (
-            <form>
-                <h3>Create New User</h3>
+            <form style={{width:'85%', marginLeft:'5%', alignItems:'center', justifyContent: "center"}} align="center">
+                <Typography variant="h4"  style={{marginTop:'20px'}} color="primary">Create New User</Typography>
+<div>
+                <TextField fullWidth label="First Name" variant="standard" margin="dense" size="small" required />
+  <TextField fullWidth label="Last Name" variant="standard"  margin="dense" size="small" required />
+  <TextField fullWidth label="Email" variant="standard" type="email" margin="dense" size="small" required />
+  <TextField fullWidth label="Password" variant="standard" type="password"  size="small" margin="dense" required />
+  </div>
 
-                <div className="form-group">
-                    <label>Employee ID #</label>
-                    <input type="text" className="form-control" placeholder="Employee ID #" />
-                </div>
+      <div>
+  <Button style={{marginTop:'20px'}} type="submit" variant="contained" color="primary">
+    Signup
+  </Button>
+</div>
 
-                <div className="form-group">
-                    <label>Password</label>
-                    <input type="password" className="form-control" placeholder="Enter password" />
-                </div>
-
-                <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
             </form>
         );
-    }
+    
 }

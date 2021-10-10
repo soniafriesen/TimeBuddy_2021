@@ -7,29 +7,29 @@ type Query {
  endcompanypayment(name:String,email:String): Company
  
  """ Manager query """
- getallmanagers(compname:String):[Manager]
+ getallmanagers:[Manager]
  getspecificmanager(empid:Int): Manager
  deletemanager(empid:Int): String
 
  """ Employee query """
- getallemployees (compname:String): [Employee]
+ getallemployees : [Employee]
  getallemployeesbymanager(managerid:Int): [Employee]
  getspecificemployee(empid:Int): Employee
  deleteemployee(empid:Int): String
 
  """ Shift query """
- getallshifts(compname:String):[Shift]
+ getallshifts:[Shift]
  getspecificshift(shiftid:Int): Shift
  deleteshift(shiftid:Int): String
 
  """ Shift Pool query """
- getallinpool(compname:String):[Shiftpool]
+ getallinpool:[Shiftpool]
  getspecificpoolshift(shiftid:Int):Shiftpool
  removeshiftfrompool(shiftid:Int, empid:Int):String
 
 
  """ Meeting query """
- getallmeetings(compname:String):[Meeting]
+ getallmeetings:[Meeting]
  showspecificmeeting(meetingid:Int):Meeting
  removemeeting(meetingid:Int):String
 
@@ -47,7 +47,6 @@ type Company {
 
 """  --Manager Type--   """
 type Manager{
-compname:String,
 department:String,
 empid: Int,
 firstname: String,
@@ -59,7 +58,6 @@ startdate: String,
 
 """  --Employee Type--   """
 type Employee{
-compname:String,
 managerid:Int,
 department:String,
 empid: Int,
@@ -71,8 +69,7 @@ startdate: String,
 }
 
 """  --Shifts Type--   """
-type Shift{
-    compname:String,
+type Shift{    
     shiftid:Int,
     empid:Int,
     date:String,
@@ -81,8 +78,7 @@ type Shift{
 }
 
 """  --Shift Pool Type--   """
-type Shiftpool{
-    compname:String,
+type Shiftpool{   
     shiftid:Int,
     date:String,
     starttime:String,
@@ -90,8 +86,7 @@ type Shiftpool{
 }
 
 """  --Meetings Type--   """
-type Meeting{
-    compname:String,
+type Meeting{   
     meetingid:Int,
     empid:Int,
     date:String,
@@ -107,26 +102,26 @@ type Mutation{
     updatecompany(name: String, email: String, payoption: String): Company 
 
     """Manager Mutations"""
-    addmanager(compname:String, department:String, firstname: String, lastname: String, email:String, dob: String): Manager
+    addmanager(department:String, firstname: String, lastname: String, email:String, dob: String): Manager
     updatemanageremail(empid: Int, email:String): Manager
     updatemanagerdepartment(empid: Int, department:String): Manager      
 
     """Employee Mutations"""
-    addemployee(compname:String, managerid:Int, department:String, firstname: String, lastname: String, email:String, dob: String): Employee
+    addemployee(managerid:Int, department:String, firstname: String, lastname: String, email:String, dob: String): Employee
     updateemployeeemail(empid: Int,email: String): Employee
     updateemployeedepartment(empid: Int, department:String): Employee 
 
     """Shift Mutations"""
-    addshift(compname:String,empid:Int, date:String, starttime:String, endtime:String): Shift
+    addshift(empid:Int, date:String, starttime:String, endtime:String): Shift
     updateshiftstarttime(shiftid:Int,starttime:String): Shift
     updateshiftendtime(shiftid:Int,endtime:String): Shift
     switchshift(shiftid:Int,empid:Int): Shift
 
     """Shift Pool Type"""
-    addshifttopool(compname:String,shiftid:Int): Shiftpool
+    addshifttopool(shiftid:Int): Shiftpool
 
     """Meeting Type"""
-    postameeting(compname:String, empid:Int,date:String,starttime:String,message:String): Meeting
+    postameeting(empid:Int,date:String,starttime:String,message:String): Meeting
     changemeetingtime(meetingid:Int, starttime:String):Meeting
     changemeetingdate(meetingid:Int, date:String):Meeting
 }

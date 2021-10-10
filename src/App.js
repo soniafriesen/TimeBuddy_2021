@@ -5,6 +5,7 @@ import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme";
 import Home from "./components/home";
 import Signup from "./components/signup"
+import ScheduleMeeting from "./components/schedulemeeting"
 import {
   Toolbar,
   AppBar,
@@ -47,6 +48,9 @@ const App = () => {
             <MenuItem component={Link} to="/signup" onClick={handleClose}>
               Signup
             </MenuItem>
+            <MenuItem component={Link} to="/schedulemeeting" onClick={handleClose}>
+              Schedule Meetings
+            </MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
@@ -54,6 +58,7 @@ const App = () => {
         <Route exact path="/" render={() => <Redirect to="/home" />} />
         <Route path="/home" component={Home} />
         <Route path="/signup" component={Signup} />
+        <Route path="/schedulemeeting" component={ScheduleMeeting} />
       </div>
     </MuiThemeProvider>
   );

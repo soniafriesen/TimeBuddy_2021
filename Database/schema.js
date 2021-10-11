@@ -5,11 +5,6 @@ type Query {
  getspecificcompany(name:String, email: String): Company
  deletespecificcompany(name:String, email: String): String  
  endcompanypayment(name:String,email:String): Company
- 
- """ Manager query """
- getallmanagers:[Manager]
- getspecificmanager(empid:Int): Manager
- deletemanager(empid:Int): String
 
  """ Employee query """
  getallemployees : [Employee]
@@ -43,17 +38,6 @@ type Company {
  payamount: Float
  startdate: String 
  enddate:String
-}
-
-"""  --Manager Type--   """
-type Manager{
-department:String,
-empid: Int,
-firstname: String,
-lastname:String,
-email: String,
-dob: String,
-startdate: String,
 }
 
 """  --Employee Type--   """
@@ -99,12 +83,7 @@ type Mutation{
 
     """company Mutations"""    
     addcompany(name: String, email: String, payoption: String): Company
-    updatecompany(name: String, email: String, payoption: String): Company 
-
-    """Manager Mutations"""
-    addmanager(department:String, firstname: String, lastname: String, email:String, dob: String): Manager
-    updatemanageremail(empid: Int, email:String): Manager
-    updatemanagerdepartment(empid: Int, department:String): Manager      
+    updatecompany(name: String, email: String, payoption: String): Company      
 
     """Employee Mutations"""
     addemployee(managerid:Int, department:String, firstname: String, lastname: String, email:String, dob: String): Employee

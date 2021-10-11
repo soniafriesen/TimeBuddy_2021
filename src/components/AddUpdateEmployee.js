@@ -206,6 +206,7 @@ const EmployeeInfo = (props) => {
                       id="managerid-field"
                       onChange={manageridOnChange}
                       value={state.managerid}
+                      label="format - ####"
                       fullWidth
                     />
                   </TableCell>
@@ -214,6 +215,7 @@ const EmployeeInfo = (props) => {
                       id="department-field"
                       onChange={departmentOnChange}
                       value={state.department}
+                      label="department"
                       fullWidth
                     />
                   </TableCell>
@@ -222,6 +224,7 @@ const EmployeeInfo = (props) => {
                       id="first-name-field"
                       onChange={firstnameOnChange}
                       value={state.firstname}
+                      label="first name"
                       fullWidth
                     />
                   </TableCell>
@@ -230,6 +233,7 @@ const EmployeeInfo = (props) => {
                       id="last-name-field"
                       onChange={lastnameOnChange}
                       value={state.lastname}
+                      label="last name"
                       fullWidth
                     />
                   </TableCell>
@@ -238,6 +242,7 @@ const EmployeeInfo = (props) => {
                       id="email-field"
                       onChange={emailOnChange}
                       value={state.email}
+                      label="XX@XX.XX"
                       fullWidth
                     />
                   </TableCell>
@@ -246,6 +251,7 @@ const EmployeeInfo = (props) => {
                       id="dob-field"
                       onChange={dobOnChange}
                       value={state.dob}
+                      label="YYYY-MM-DD"
                       fullWidth
                     />
                   </TableCell>

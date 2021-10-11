@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import { Route, Link, Redirect } from "react-router-dom";
 import Reorder from "@material-ui/icons/Reorder";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme";
 import Home from "./components/home";
-import Signup from "./components/signup"
-import ScheduleMeeting from "./components/schedulemeeting"
+import Signup from "./components/signup";
+import ScheduleMeeting from "./components/schedulemeeting";
+import EmployeeInfo from "./components/AddUpdateEmployee";
 import {
   Toolbar,
   AppBar,
@@ -13,14 +14,31 @@ import {
   MenuItem,
   IconButton,
   Typography,
+  Snackbar,
 } from "@material-ui/core";
 const App = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleClose = () => {
-    setAnchorEl(null);
+  const initialState = {
+    gotData: false,
+    anchorEl: null,
+    snackBarMsg: "",
   };
+  const reducer = (state, newState) => ({ ...state, ...newState });
+  const [state, setState] = useReducer(reducer, initialState);
+
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setState({ anchorEl: event.currentTarget });
+  };
+
+  const handleClose = () => {
+    setState({ anchorEl: null });
+  };
+
+  const snackbarClose = () => {
+    setState({ gotData: false });
+  };
+
+  const msgFromChild = (msg) => {
+    setState({ snackBarMsg: msg, gotData: true });
   };
   return (
     <MuiThemeProvider theme={theme}>
@@ -38,18 +56,25 @@ const App = () => {
           </IconButton>
           <Menu
             id="simple-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
+            anchorEl={state.anchorEl}
+            open={Boolean(state.anchorEl)}
             onClose={handleClose}
           >
-          <MenuItem component={Link} to="/home" onClick={handleClose}>
-            Home
-          </MenuItem>
+            <MenuItem component={Link} to="/home" onClick={handleClose}>
+              Home
+            </MenuItem>
             <MenuItem component={Link} to="/signup" onClick={handleClose}>
               Signup
             </MenuItem>
-            <MenuItem component={Link} to="/schedulemeeting" onClick={handleClose}>
+            <MenuItem
+              component={Link}
+              to="/schedulemeeting"
+              onClick={handleClose}
+            >
               Schedule Meetings
+            </MenuItem>
+            <MenuItem component={Link} to="/employees" onClick={handleClose}>
+              Employees
             </MenuItem>
           </Menu>
         </Toolbar>
@@ -59,7 +84,17 @@ const App = () => {
         <Route path="/home" component={Home} />
         <Route path="/signup" component={Signup} />
         <Route path="/schedulemeeting" component={ScheduleMeeting} />
+        <Route
+          path="/employees"
+          render={() => <EmployeeInfo dataFromChild={msgFromChild} />}
+        />
       </div>
+      <Snackbar
+        open={state.gotData}
+        message={state.snackBarMsg}
+        autoHideDuration={3000}
+        onClose={snackbarClose}
+      />
     </MuiThemeProvider>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useReducer, useEffect } from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
+import theme from "../theme";
 import {
   Card,
   CardContent,
@@ -19,9 +20,9 @@ const EmployeeInfo = (props) => {
   const initialState = {
     resArr: [],
     managers: [],
-    managerid: null,
+    managerid: 0,
     department: "",
-    empid: null,
+    empid: 0,
     firstname: "",
     lastname: "",
     email: "",
@@ -99,11 +100,13 @@ const EmployeeInfo = (props) => {
         }),
       });
       payload = await response.json();
-      props.dataFromChild(`added employee ${props.data.addemployee.firstname}`);
+      props.dataFromChild(
+        `added employee ${payload.data.addemployee.firstname}`
+      );
       setState({
-        managerid: null,
+        managerid: 0,
         department: "",
-        empid: null,
+        empid: 0,
         firstname: "",
         lastname: "",
         email: "",
@@ -126,9 +129,9 @@ const EmployeeInfo = (props) => {
         }),
       });
       setState({
-        managerid: null,
+        managerid: 0,
         department: "",
-        empid: null,
+        empid: 0,
         firstname: "",
         lastname: "",
         email: "",
@@ -151,9 +154,9 @@ const EmployeeInfo = (props) => {
         }),
       });
       setState({
-        managerid: null,
+        managerid: 0,
         department: "",
-        empid: null,
+        empid: 0,
         firstname: "",
         lastname: "",
         email: "",
@@ -170,10 +173,10 @@ const EmployeeInfo = (props) => {
   };
 
   return (
-    <MuiThemeProvider>
+    <MuiThemeProvider theme={theme}>
       <Card>
         <Typography variant="h4" align="center">
-          Add New Employee
+          New Employee
         </Typography>
         <CardContent>
           <TableContainer component={Paper}>
@@ -276,7 +279,10 @@ const EmployeeInfo = (props) => {
           <div align="center">
             <TableRow key="headers1">
               <TableCell component="th" scope="row">
-                Manager ID
+                ManagerId
+              </TableCell>
+              <TableCell component="th" scope="row">
+                EmployeeId
               </TableCell>
               <TableCell component="th" scope="row">
                 Department
@@ -300,9 +306,11 @@ const EmployeeInfo = (props) => {
                   {row.managerid}
                 </TableCell>
                 <TableCell component="th" scope="row">
+                  {row.empid}
+                </TableCell>
+                <TableCell component="th" scope="row">
                   {row.department}
                 </TableCell>
-
                 <TableCell component="th" scope="row">
                   {row.firstname}
                 </TableCell>

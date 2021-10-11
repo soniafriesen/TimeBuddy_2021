@@ -13,15 +13,12 @@ import {
   Button,
   Typography,
 } from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-
-const GRAPHURL = "http://localhost:5000/graphql"; // ***  CHANGE OR REMOVE THIS CONSTANT TO WHATEVER THE GRAPHQL URL IS ***
-
+const GRAPHURL = "http://localhost:5000/graphql";
 const EmployeeInfo = (props) => {
   //employee fields, same as the db schema
   const initialState = {
     resArr: [],
-    compname: "",
+    managers: [],
     managerid: null,
     department: "",
     empid: null,
@@ -29,8 +26,8 @@ const EmployeeInfo = (props) => {
     lastname: "",
     email: "",
     dob: "",
+    reset: false,
   };
-
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [state, setState] = useReducer(reducer, initialState);
 
@@ -88,7 +85,12 @@ const EmployeeInfo = (props) => {
 
   const addEmployeeInfo = async () => {
     try {
-      let response = await fetch(GRAPHURL, {
+      let response = null;
+      let payload = null;
+
+      //just a regular employee
+      //add employee collection
+      response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
@@ -96,12 +98,9 @@ const EmployeeInfo = (props) => {
                                  { managerid, department, firstname, lastname, email, dob,startdate  } } `,
         }),
       });
-      let payload = await response.json();
-      props.dataFromChild(
-        `added info for ${payload.data.addemployee.firstname} project`
-      );
+      payload = await response.json();
+      props.dataFromChild(`added employee ${props.data.addemployee.firstname}`);
       setState({
-        compname: "",
         managerid: null,
         department: "",
         empid: null,
@@ -206,7 +205,7 @@ const EmployeeInfo = (props) => {
                       id="managerid-field"
                       onChange={manageridOnChange}
                       value={state.managerid}
-                      label="format - ####"
+                      label="format - #### (0 for manager)"
                       fullWidth
                     />
                   </TableCell>
@@ -283,13 +282,13 @@ const EmployeeInfo = (props) => {
                 Department
               </TableCell>
               <TableCell component="th" scope="row">
-                Email
-              </TableCell>
-              <TableCell component="th" scope="row">
                 First Name
               </TableCell>
               <TableCell component="th" scope="row">
                 Last Name
+              </TableCell>
+              <TableCell component="th" scope="row">
+                Email
               </TableCell>
               <TableCell component="th" scope="row">
                 DOB
@@ -303,14 +302,15 @@ const EmployeeInfo = (props) => {
                 <TableCell component="th" scope="row">
                   {row.department}
                 </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.email}
-                </TableCell>
+
                 <TableCell component="th" scope="row">
                   {row.firstname}
                 </TableCell>
                 <TableCell component="th" scope="row">
                   {row.lastname}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {row.email}
                 </TableCell>
                 <TableCell component="th" scope="row">
                   {row.dob}

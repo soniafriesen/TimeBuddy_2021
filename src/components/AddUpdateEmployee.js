@@ -188,7 +188,16 @@ const EmployeeInfo = (props) => {
                     Department
                   </TableCell>
                   <TableCell component="th" scope="row">
+                    First Name
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Last Name
+                  </TableCell>
+                  <TableCell component="th" scope="row">
                     Email
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    DOB
                   </TableCell>
                 </TableRow>
                 <TableRow key="fillable1">
@@ -210,27 +219,6 @@ const EmployeeInfo = (props) => {
                   </TableCell>
                   <TableCell component="th" scope="row">
                     <TextField
-                      id="email-field"
-                      onChange={emailOnChange}
-                      value={state.email}
-                      fullWidth
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow key="headers2">
-                  <TableCell component="th" scope="row">
-                    First Name
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    Last Name
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    DOB
-                  </TableCell>
-                </TableRow>
-                <TableRow key="fillable2">
-                  <TableCell component="th" scope="row">
-                    <TextField
                       id="first-name-field"
                       onChange={firstnameOnChange}
                       value={state.firstname}
@@ -242,6 +230,14 @@ const EmployeeInfo = (props) => {
                       id="last-name-field"
                       onChange={lastnameOnChange}
                       value={state.lastname}
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <TextField
+                      id="email-field"
+                      onChange={emailOnChange}
+                      value={state.email}
                       fullWidth
                     />
                   </TableCell>
@@ -264,116 +260,84 @@ const EmployeeInfo = (props) => {
                       ADD EMP.
                     </Button>
                   </TableCell>
-                  <TableCell component="th" scope="row" style={{ width: 200 }}>
-                    <Button
-                      style={{ color: "blue" }}
-                      variant="contained"
-                      onClick={updateEmployeeEmail}
-                    >
-                      EDIT EMAIL
-                    </Button>
-                  </TableCell>
-                  <TableCell component="th" scope="row" style={{ width: 200 }}>
-                    <Button
-                      style={{ color: "blue" }}
-                      variant="contained"
-                      onClick={updateEmployeeDepartment}
-                    >
-                      EDIT DEPT.
-                    </Button>
-                  </TableCell>
-                  <TableCell component="th" scope="row" style={{ width: 200 }}>
-                    <Button
-                      style={{ color: "red" }}
-                      variant="contained"
-                      onClick={deleteEmployee}
-                    >
-                      DELETE EMP.
-                    </Button>
-                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
+          <br />
           <Typography variant="h5" align="center">
-            Employees
+            Current Employees
           </Typography>
-          <TableRow key="headers1">
-            <TableCell component="th" scope="row">
-              Manager ID
-            </TableCell>
-            <TableCell component="th" scope="row">
-              Department
-            </TableCell>
-            <TableCell component="th" scope="row">
-              Email
-            </TableCell>
-          </TableRow>
-          {state.resArr.map((row) => (
-            <TableRow key={state.resArr.indexOf(row)}>
-              <TableCell component="th" scope="row">
-                {row.managerid}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {row.department}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {row.email}
-              </TableCell>
-            </TableRow>
-          ))}
-          <TableRow key="headers2">
-            <TableCell component="th" scope="row">
-              First Name
-            </TableCell>
-            <TableCell component="th" scope="row">
-              Last Name
-            </TableCell>
-            <TableCell component="th" scope="row">
-              DOB
-            </TableCell>
-          </TableRow>
-          {state.resArr.map((row) => (
-            <TableRow key={state.resArr.indexOf(row)}>
-              <TableCell component="th" scope="row">
-                {row.firstname}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {row.lastname}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {row.dob}
-              </TableCell>
-            </TableRow>
-          ))}
           <div align="center">
-            <Autocomplete
-              key={state.reset}
-              id="employee"
-              options={state.resArr}
-              getOptionLabel={(option) =>
-                "#" +
-                option.empid +
-                " :" +
-                option.firstname +
-                " " +
-                option.lastname
-              }
-              style={{
-                width: 350,
-                height: 20,
-                paddingTop: "2vh",
-                paddingBottom: "10vh",
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="employee info"
-                  variant="outlined"
-                  fullWidth
-                />
-              )}
-            />
+            <TableRow key="headers1">
+              <TableCell component="th" scope="row">
+                Manager ID
+              </TableCell>
+              <TableCell component="th" scope="row">
+                Department
+              </TableCell>
+              <TableCell component="th" scope="row">
+                Email
+              </TableCell>
+              <TableCell component="th" scope="row">
+                First Name
+              </TableCell>
+              <TableCell component="th" scope="row">
+                Last Name
+              </TableCell>
+              <TableCell component="th" scope="row">
+                DOB
+              </TableCell>
+            </TableRow>
+            {state.resArr.map((row) => (
+              <TableRow key={state.resArr.indexOf(row)}>
+                <TableCell component="th" scope="row">
+                  {row.managerid}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {row.department}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {row.email}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {row.firstname}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {row.lastname}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {row.dob}
+                </TableCell>
+                <TableCell component="th" scope="row" style={{ width: 200 }}>
+                  <Button
+                    style={{ color: "blue" }}
+                    variant="contained"
+                    onClick={updateEmployeeEmail}
+                  >
+                    EDIT EMAIL
+                  </Button>
+                </TableCell>
+                <TableCell component="th" scope="row" style={{ width: 200 }}>
+                  <Button
+                    style={{ color: "blue" }}
+                    variant="contained"
+                    onClick={updateEmployeeDepartment}
+                  >
+                    EDIT DEPT.
+                  </Button>
+                </TableCell>
+                <TableCell component="th" scope="row" style={{ width: 200 }}>
+                  <Button
+                    style={{ color: "red" }}
+                    variant="contained"
+                    onClick={deleteEmployee}
+                  >
+                    DELETE EMP.
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </div>
         </CardContent>
       </Card>

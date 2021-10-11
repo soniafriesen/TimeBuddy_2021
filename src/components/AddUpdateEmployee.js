@@ -123,7 +123,7 @@ const EmployeeInfo = (props) => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
           query: ` mutation { updateemployeeemail (empid: Int, email: String)
-                                { firstname, lastname, email } }`, //*** not sure how to edit this to work :| ***
+            { managerid, department, firstname, lastname, email, dob,startdate  }}`, //*** not sure how to edit this to work :| ***
         }),
       });
       setState({
@@ -191,19 +191,6 @@ const EmployeeInfo = (props) => {
                     Email
                   </TableCell>
                 </TableRow>
-                {state.resArr.map((row) => (
-                  <TableRow key={state.resArr.indexOf(row)}>
-                    <TableCell component="th" scope="row">
-                      {row.managerid}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row.department}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row.email}
-                    </TableCell>
-                  </TableRow>
-                ))}
                 <TableRow key="fillable1">
                   <TableCell component="th" scope="row">
                     <TextField
@@ -241,19 +228,6 @@ const EmployeeInfo = (props) => {
                     DOB
                   </TableCell>
                 </TableRow>
-                {state.resArr.map((row) => (
-                  <TableRow key={state.resArr.indexOf(row)}>
-                    <TableCell component="th" scope="row">
-                      {row.firstname}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row.lastname}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row.dob}
-                    </TableCell>
-                  </TableRow>
-                ))}
                 <TableRow key="fillable2">
                   <TableCell component="th" scope="row">
                     <TextField
@@ -324,17 +298,66 @@ const EmployeeInfo = (props) => {
           <Typography variant="h5" align="center">
             Employees
           </Typography>
+          <TableRow key="headers1">
+            <TableCell component="th" scope="row">
+              Manager ID
+            </TableCell>
+            <TableCell component="th" scope="row">
+              Department
+            </TableCell>
+            <TableCell component="th" scope="row">
+              Email
+            </TableCell>
+          </TableRow>
+          {state.resArr.map((row) => (
+            <TableRow key={state.resArr.indexOf(row)}>
+              <TableCell component="th" scope="row">
+                {row.managerid}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {row.department}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {row.email}
+              </TableCell>
+            </TableRow>
+          ))}
+          <TableRow key="headers2">
+            <TableCell component="th" scope="row">
+              First Name
+            </TableCell>
+            <TableCell component="th" scope="row">
+              Last Name
+            </TableCell>
+            <TableCell component="th" scope="row">
+              DOB
+            </TableCell>
+          </TableRow>
+          {state.resArr.map((row) => (
+            <TableRow key={state.resArr.indexOf(row)}>
+              <TableCell component="th" scope="row">
+                {row.firstname}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {row.lastname}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {row.dob}
+              </TableCell>
+            </TableRow>
+          ))}
           <div align="center">
             <Autocomplete
               key={state.reset}
               id="employee"
               options={state.resArr}
               getOptionLabel={(option) =>
-                option.empNumber +
+                "#" +
+                option.empid +
+                " :" +
+                option.firstname +
                 " " +
-                option.empName +
-                "; Email: " +
-                option.empEmail
+                option.lastname
               }
               style={{
                 width: 350,

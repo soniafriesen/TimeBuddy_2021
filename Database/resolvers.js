@@ -155,123 +155,7 @@ const resolvers = {
       });
       return `Deleted company ${company.name}`;
     }
-  },
-  /**************************************************************************************/
-  /*                               managers Function                                    */
-  /**************************************************************************************/
-  getallmanagers: async () => {
-    let db = await dbRtns.getDBInstance();
-    let manager = await dbRtns.findAll(db, managers);
-    if (!manager) return `manager does not exist in company `;
-    else return manager;
-  },
-  getspecificmanager: async (args) => {
-    let db = await dbRtns.getDBInstance();
-    let manager = await dbRtns.findOne(db, managers, {
-      empid: args.empid,
-    });
-    if (!manager) return `manager does not exist in company ${args.compname}`;
-    else return manager;
-  },
-  addmanager: async (args) => {
-    let db = await dbRtns.getDBInstance();
-    var usaTime = new Date().toLocaleString("en-US", {
-      timeZone: "America/New_York",
-    });
-    usaTime = new Date(usaTime);
-    var timeStr = new Date() + 3600000 * -5.0;
-    var timeArr = timeStr.split(" ");
-    var timeinput =
-      timeArr[3] +
-      "-" +
-      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
-      "-" +
-      timeArr[2] +
-      " " +
-      timeArr[4];
-    let startdate = timeinput;
-    let min = Math.ceil(1001);
-    let max = Math.floor(9999);
-    let random = Math.floor(Math.random() * (max - min + 1)) + min;
-    //check if there already is a empid
-    let manager = await dbRtns.findAll(db, managers, {
-      compname: `${args.compname}`,
-    });
-    let employee = await dbRtns.findAll(db, employees, {
-      compname: `${args.compname}`,
-    });
-    if (manager || employee) {
-      let doesExist = true;
-      while (doesExist) {
-        let yes = managers.includes(random);
-        let yes2 = employee.includes(random);
-        if ((doesExist = yes || yes2)) {
-          random = Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-      }
-      //make sure all codes are unique
-    }
-    let newmanager = `{"department":"${args.department}", "empid": ${random}, "firstname": "${args.firstname}", "lastname": "${args.lastname}", "email":"${args.email}", "dob": "${args.dob}", "startdate":"${startdate}"}`;
-    newmanager = JSON.parse(newmanager);
-    let found = await dbRtns.findOne(db, managers, {
-      email: `${args.email}`,
-    });
-    if (!found) {
-      let results = await dbRtns.addOne(db, managers, newmanager);
-      return results.insertedCount === 1 ? newmanager : null;
-    } else return `Manager ${args.firstname} already exists`;
-  },
-  updatemanageremail: async (args) => {
-    let db = await dbRtns.getDBInstance();
-    let manager = await dbRtns.findOne(db, managers, {
-      empid: args.empid,
-    });
-    if (!manager) return `manager does not exist in collection`;
-    let updateResults = await dbRtns.updateOne(
-      db,
-      managers,
-      { _id: manager._id },
-      {
-        email: `${args.email}`,
-      }
-    );
-    manager = await dbRtns.findOne(db, managers, {
-      empid: args.empid,
-    });
-    return manager;
-  },
-  updatemanagerdepartment: async (args) => {
-    let db = await dbRtns.getDBInstance();
-    let manager = await dbRtns.findOne(db, managers, {
-      empid: args.empid,
-    });
-    if (!manager) return `manager does not exist in collection`;
-    let updateResults = await dbRtns.updateOne(
-      db,
-      managers,
-      { _id: manager._id },
-      {
-        department: `${args.department}`,
-      }
-    );
-    manager = await dbRtns.findOne(db, managers, {
-      empid: args.empid,
-    });
-    return manager;
-  },
-  deletemanager: async (args) => {
-    let db = await dbRtns.getDBInstance();
-    let manager = await dbRtns.findOne(db, managers, {
-      empid: args.empid,
-    });
-    if (!manager) return `manager does not exist in collection`;
-    else {
-      let deletedmanager = await dbRtns.deleteOne(db, managers, {
-        _id: manager._id,
-      });
-      return `Deleted manager #${manager.empid}`;
-    }
-  },
+  }, 
   /**************************************************************************************/
   /*                                 employee Functions                                 */
   /**************************************************************************************/
@@ -319,19 +203,15 @@ const resolvers = {
     let min = Math.ceil(1001);
     let max = Math.floor(9999);
     let random = Math.floor(Math.random() * (max - min + 1)) + min;
-    //check if there already is a empid
-    let manager = await dbRtns.findAll(db, managers, {
-      compname: `${args.compname}`,
-    });
+    
     let employee = await dbRtns.findAll(db, employees, {
       compname: `${args.compname}`,
     });
-    if (manager || employee) {
+    if ( employee) {
       let doesExist = true;
-      while (doesExist) {
-        let yes = managers.includes(random);
+      while (doesExist) {        
         let yes2 = employee.includes(random);
-        if ((doesExist = yes || yes2)) {
+        if ((doesExist = yes2)) {
           random = Math.floor(Math.random() * (max - min + 1)) + min;
         }
       }
@@ -344,7 +224,7 @@ const resolvers = {
     });
     if (!found) {
       let results = await dbRtns.addOne(db, employees, newemployee);
-      return results.insertedCount === 1 ? newemployee : null;
+      return results.insertedCount === 1 ? newemployee : newemployee;
     } else return `Employee ${found.empid} already exists`;
   },
   updateemployeeemail: async (args) => {

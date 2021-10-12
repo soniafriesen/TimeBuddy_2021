@@ -21,13 +21,12 @@ const EmployeeInfo = (props) => {
     resArr: [],
     managerid: null,
     department: "",
-    empid: 0,
+    empid: null,
     firstname: "",
     lastname: "",
     email: "",
     dob: "",
   };
-  var x = "";
   //modal variables
   const [show, setShow] = useState(false);
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -37,6 +36,9 @@ const EmployeeInfo = (props) => {
     fetchEmployeeInfo();
   }, []);
 
+  const empidChange = (e) => {
+    setState({ empid: e.target.value });
+  };
   const manageridOnChange = (e) => {
     setState({ managerid: e.target.value });
   };
@@ -147,13 +149,12 @@ const EmployeeInfo = (props) => {
     }
   };
   const deleteEmployee = async () => {
-    var y = parseInt(x);
     try {
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: `{ deleteemployee (empid: ${y}) }`,
+          query: `{ deleteemployee (empid: ${state.empid}) }`,
         }),
       });
       let payload = await response.json();
@@ -185,17 +186,16 @@ const EmployeeInfo = (props) => {
           <div className="modal-header">
             <h4 className="modal-title">Enter ID to delete</h4>
           </div>
-          <div className="modal-body">
-            <textarea id="textarea">ID</textarea>
+          <div className="modal-body" style={{ width: 200 }}>
+            <TextField
+              id="managerid-field"
+              onChange={empidChange}
+              value={state.empid}
+              fullWidth
+            />
           </div>
           <div className="modal-footer">
-            <button
-              onClick={
-                ((x = document.getElementById("textarea").value),
-                deleteEmployee)
-              }
-              className="deleteButton"
-            >
+            <button onClick={deleteEmployee} className="deleteButton">
               DELETE
             </button>
 
@@ -404,20 +404,18 @@ const EmployeeInfo = (props) => {
                     EDIT
                   </Button>
                 </TableCell>
-                <TableCell component="th" scope="row" style={{ width: 200 }}>
-                  <div className="EmployeeInfo">
-                    <Button
-                      style={{ color: "red" }}
-                      variant="contained"
-                      onClick={() => setShow(true)}
-                    >
-                      DELETE EMP.
-                    </Button>
-                    <Modal onClose={() => setShow(false)} show={show} />
-                  </div>
-                </TableCell>
               </TableRow>
             ))}
+          </div>
+          <div className="EmployeeInfo" align="center">
+            <Button
+              style={{ color: "red" }}
+              variant="contained"
+              onClick={() => setShow(true)}
+            >
+              DELETE EMP.
+            </Button>
+            <Modal onClose={() => setShow(false)} show={show} />
           </div>
         </CardContent>
       </Card>

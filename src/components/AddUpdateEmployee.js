@@ -1,5 +1,6 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
 import theme from "../theme";
 import {
   Card,
@@ -14,12 +15,12 @@ import {
   Button,
   Typography,
 } from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 const GRAPHURL = "http://localhost:5000/graphql";
 const EmployeeInfo = (props) => {
   //employee fields, same as the db schema
   const initialState = {
     resArr: [],
-    managers: [],
     managerid: 0,
     department: "",
     empid: 0,
@@ -27,8 +28,11 @@ const EmployeeInfo = (props) => {
     lastname: "",
     email: "",
     dob: "",
-    reset: false,
+    reset: false,    
   };
+  var x = ""; 
+  //modal variables
+  const [show, setShow] = useState(false);
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [state, setState] = useReducer(reducer, initialState);
 
@@ -60,6 +64,7 @@ const EmployeeInfo = (props) => {
     setState({ dob: e.target.value });
   };
 
+ 
   const fetchEmployeeInfo = async () => {
     try {
       props.dataFromChild("running setup...");
@@ -68,7 +73,7 @@ const EmployeeInfo = (props) => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
           query:
-            "{ getallemployees{managerid,department,empid,firstname,lastname,dob,startdate}}",
+            "{ getallemployees{managerid,department,empid,firstname,lastname,email,dob,startdate}}",
         }),
       });
       let payload = await response.json();
@@ -88,7 +93,6 @@ const EmployeeInfo = (props) => {
     try {
       let response = null;
       let payload = null;
-
       //just a regular employee
       //add employee collection
       response = await fetch(GRAPHURL, {
@@ -167,9 +171,69 @@ const EmployeeInfo = (props) => {
       console.log(error);
     }
   };
-
+  const onOpenModal = async () => {
+    setState({ show: true });
+  };
   const deleteEmployee = async () => {
-    //NYI
+    var y = parseInt(x);
+    try {
+      let response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: `{ deleteemployee (empid: ${y}) }`,
+        }),
+      });
+      let payload = await response.json();
+      props.dataFromChild(`${payload.data.deleteemployee}`);
+      console.log(payload.data.deleteemployee);
+      setState({
+        managerid: 0,
+        department: "",
+        empid: 0,
+        firstname: "",
+        lastname: "",
+        email: "",
+        dob: "",
+      });
+      fetchEmployeeInfo();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //modal
+  const Modal = (props) => {
+    if (!props.show) {
+      return null;
+    }
+
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h4 className="modal-title">Enter ID to delete</h4>
+          </div>
+          <div className="modal-body">
+            <textarea id="textarea">ID</textarea>
+          </div>
+          <div className="modal-footer">
+            <button
+              onClick={
+                ((x = document.getElementById("textarea").value),
+                deleteEmployee)
+              }
+              className="deleteButton"
+            >
+              DELETE
+            </button>
+
+            <button onClick={props.onClose} className="button">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -208,7 +272,7 @@ const EmployeeInfo = (props) => {
                       id="managerid-field"
                       onChange={manageridOnChange}
                       value={state.managerid}
-                      label="format - #### (0 for manager)"
+                      label="#### (0 manager)"
                       fullWidth
                     />
                   </TableCell>
@@ -342,13 +406,16 @@ const EmployeeInfo = (props) => {
                   </Button>
                 </TableCell>
                 <TableCell component="th" scope="row" style={{ width: 200 }}>
-                  <Button
-                    style={{ color: "red" }}
-                    variant="contained"
-                    onClick={deleteEmployee}
-                  >
-                    DELETE EMP.
-                  </Button>
+                  <div className="EmployeeInfo">
+                    <Button
+                      style={{ color: "red" }}
+                      variant="contained"
+                      onClick={() => setShow(true)}
+                    >
+                      DELETE EMP.
+                    </Button>
+                    <Modal onClose={() => setShow(false)} show={show} />
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

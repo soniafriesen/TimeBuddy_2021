@@ -188,7 +188,7 @@ const EmployeeInfo = (props) => {
           </div>
           <div className="modal-body" style={{ width: 200 }}>
             <TextField
-              id="managerid-field"
+              id="empid-field"
               onChange={empidChange}
               value={state.empid}
               fullWidth
@@ -198,7 +198,6 @@ const EmployeeInfo = (props) => {
             <button onClick={deleteEmployee} className="deleteButton">
               DELETE
             </button>
-
             <button onClick={props.onClose} className="button">
               Close
             </button>
@@ -301,7 +300,7 @@ const EmployeeInfo = (props) => {
                       variant="contained"
                       onClick={addEmployeeInfo}
                     >
-                      ADD EMP.
+                      ADD
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -339,81 +338,43 @@ const EmployeeInfo = (props) => {
             {state.resArr.map((row) => (
               <TableRow key={state.resArr.indexOf(row)}>
                 <TableCell component="th" scope="row">
-                  <TextField
-                    id="row-manager-field"
-                    value={row.managerid}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                  {row.managerid}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <TextField
-                    id="row-empid-field"
-                    value={row.empid}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                  {row.empid}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <TextField
-                    id="row-department-field"
-                    value={row.department}
-                    fullWidth
-                  />
+                  {row.department}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <TextField
-                    id="row-fname-field"
-                    value={row.firstname}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                  {row.firstname}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <TextField
-                    id="row-lastname-field"
-                    value={row.lastname}
-                    fullWidth
-                  />
+                  {row.lastname}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <TextField id="row-email-field" value={row.email} fullWidth />
+                  {row.email}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <TextField
-                    id="row-email-field"
-                    value={row.dob}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row" style={{ width: 200 }}>
-                  <Button
-                    style={{ color: "blue" }}
-                    variant="contained"
-                    onClick={updateEmployee}
-                  >
-                    EDIT
-                  </Button>
+                  {row.dob}
                 </TableCell>
               </TableRow>
             ))}
           </div>
           <div className="EmployeeInfo" align="center">
             <Button
+              style={{ color: "blue" }}
+              variant="contained"
+              onClick={updateEmployee}
+            >
+              EDIT
+            </Button>
+            <Button
               style={{ color: "red" }}
               variant="contained"
               onClick={() => setShow(true)}
             >
-              DELETE EMP.
+              DELETE
             </Button>
             <Modal onClose={() => setShow(false)} show={show} />
           </div>

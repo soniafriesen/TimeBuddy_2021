@@ -1,6 +1,5 @@
 import React, { useReducer, useEffect, useState } from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
 import theme from "../theme";
 import {
   Card,
@@ -15,22 +14,20 @@ import {
   Button,
   Typography,
 } from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 const GRAPHURL = "http://localhost:5000/graphql";
 const EmployeeInfo = (props) => {
   //employee fields, same as the db schema
   const initialState = {
     resArr: [],
-    managerid: 0,
+    managerid: null,
     department: "",
     empid: 0,
     firstname: "",
     lastname: "",
     email: "",
     dob: "",
-    reset: false,    
   };
-  var x = ""; 
+  var x = "";
   //modal variables
   const [show, setShow] = useState(false);
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -64,7 +61,6 @@ const EmployeeInfo = (props) => {
     setState({ dob: e.target.value });
   };
 
- 
   const fetchEmployeeInfo = async () => {
     try {
       props.dataFromChild("running setup...");
@@ -122,57 +118,33 @@ const EmployeeInfo = (props) => {
     }
   };
 
-  const updateEmployeeEmail = async () => {
+  const updateEmployee = async () => {
     try {
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` mutation { updateemployeeemail (empid: Int, email: String)
-            { managerid, department, firstname, lastname, email, dob,startdate  }}`, //*** not sure how to edit this to work :| ***
+          query: ` mutation { updateemployee (empid: ${state.empid}, department: "${state.department}", lastname:"${state.lastname}", email: "${state.email}")
+            { managerid, department, firstname, lastname, email, dob,startdate  }}`,
         }),
       });
+      let payload = await response.json();
+      props.dataFromChild(
+        `Employee #${payload.data.updateemployee.empid}, ${payload.data.updateemployee.first} ${payload.data.updateemployee.lastname} updated!`
+      );
       setState({
-        managerid: 0,
-        department: "",
-        empid: 0,
-        firstname: "",
-        lastname: "",
-        email: "",
-        dob: "",
+        emanagerid: 0,
+        edepartment: "",
+        eempid: 0,
+        efirstname: "",
+        elastname: "",
+        eemail: "",
+        edob: "",
       });
       fetchEmployeeInfo();
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const updateEmployeeDepartment = async () => {
-    try {
-      let response = await fetch(GRAPHURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          query: ` mutation { updateemployeedepartment (empid: Int, department: String)
-                                { firstname, lastname, department } }`, //*** not sure how to edit this to work :| ***
-        }),
-      });
-      setState({
-        managerid: 0,
-        department: "",
-        empid: 0,
-        firstname: "",
-        lastname: "",
-        email: "",
-        dob: "",
-      });
-      fetchEmployeeInfo();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const onOpenModal = async () => {
-    setState({ show: true });
   };
   const deleteEmployee = async () => {
     var y = parseInt(x);
@@ -367,42 +339,69 @@ const EmployeeInfo = (props) => {
             {state.resArr.map((row) => (
               <TableRow key={state.resArr.indexOf(row)}>
                 <TableCell component="th" scope="row">
-                  {row.managerid}
+                  <TextField
+                    id="row-manager-field"
+                    value={row.managerid}
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row.empid}
+                  <TextField
+                    id="row-empid-field"
+                    value={row.empid}
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row.department}
+                  <TextField
+                    id="row-department-field"
+                    value={row.department}
+                    fullWidth
+                  />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row.firstname}
+                  <TextField
+                    id="row-fname-field"
+                    value={row.firstname}
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row.lastname}
+                  <TextField
+                    id="row-lastname-field"
+                    value={row.lastname}
+                    fullWidth
+                  />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row.email}
+                  <TextField id="row-email-field" value={row.email} fullWidth />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row.dob}
+                  <TextField
+                    id="row-email-field"
+                    value={row.dob}
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
                 </TableCell>
                 <TableCell component="th" scope="row" style={{ width: 200 }}>
                   <Button
                     style={{ color: "blue" }}
                     variant="contained"
-                    onClick={updateEmployeeEmail}
+                    onClick={updateEmployee}
                   >
-                    EDIT EMAIL
-                  </Button>
-                </TableCell>
-                <TableCell component="th" scope="row" style={{ width: 200 }}>
-                  <Button
-                    style={{ color: "blue" }}
-                    variant="contained"
-                    onClick={updateEmployeeDepartment}
-                  >
-                    EDIT DEPT.
+                    EDIT
                   </Button>
                 </TableCell>
                 <TableCell component="th" scope="row" style={{ width: 200 }}>

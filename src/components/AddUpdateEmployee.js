@@ -13,6 +13,8 @@ import {
   Paper,
   Button,
   Typography,
+  Modal,
+  Box,
 } from "@material-ui/core";
 const GRAPHURL = "http://localhost:5000/graphql";
 const EmployeeInfo = (props) => {
@@ -236,22 +238,39 @@ const EmployeeInfo = (props) => {
     }
   };
   //modal
-  const Modal = (props) => {
+  const UpdateModal = (props) => {
     if (!props.show) {
       return null;
     }
 
     return (
-      <div className="modal">
-        <div className="modal-content">
-          <div className="modal-header">
-            <Typography variant="h4" align="center">
+      <Modal
+        open={props.show}
+        onClose={props.onClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 1100,
+            height: 100,
+          }}
+        >
+          <TableContainer component={Paper}>
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              align="center"
+            >
               Employee
             </Typography>
-          </div>
-          <div className="modal-body">
-            <TableContainer component={Paper}>
-              <Table aria-label="member table">
+            <Table aria-label="member table">
+              <TableBody>
                 <TableRow key="headers1">
                   <TableCell component="th" scope="row">
                     Manager ID
@@ -335,19 +354,38 @@ const EmployeeInfo = (props) => {
                     />
                   </TableCell>
                 </TableRow>
-              </Table>
-            </TableContainer>
-          </div>
-          <div className="modal-footer">
-            <button onClick={updateEmployee} className="deleteButton">
-              Save
-            </button>
-            <button onClick={props.onClose} className="button">
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
+                <TableRow>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell component="th" scope="row">
+                    <Button
+                      onClick={updateEmployee}
+                      variant="outlined"
+                      style={{
+                        color: theme.palette.secondary.main,
+                      }}
+                      className="deleteButton"
+                    >
+                      Save
+                    </Button>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <Button
+                      onClick={props.onClose}
+                      variant="outlined"
+                      style={{ color: "red" }}
+                      className="button"
+                    >
+                      Close
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Modal>
     );
   };
 
@@ -519,21 +557,21 @@ const EmployeeInfo = (props) => {
               />
             </div>
             <Button
-              style={{ color: "blue" }}
-              variant="contained"
+              style={{ color: theme.palette.secondary.main }}
+              variant="outlined"
               onClick={() => setShow({ show: true })}
             >
               EDIT
             </Button>
             <Button
               style={{ color: "red" }}
-              variant="contained"
+              variant="outlined"
               onClick={deleteEmployee}
             >
               DELETE
             </Button>
             <br />
-            <Modal
+            <UpdateModal
               onClose={() => setState({ show: false })}
               show={state.show}
             />

@@ -1,11 +1,14 @@
 const dbRtns = require("./dbroutines");
 const {
   companies,
-  managers,
   employees,
   shifts,
   pool,
   meetings,
+  payrolls,
+  timesoff,
+  emergencies,
+  signins,
 } = require("./config");
 const resolvers = {
   /**************************************************************************************/
@@ -37,9 +40,7 @@ const resolvers = {
       "-" +
       ("0" + usaTime.toLocaleString()[0]).slice(-2) +
       "-" +
-      timeArr[2] +
-      " " +
-      timeArr[4];
+      timeArr[2];
     let startdate = timeinput;
     let company = `{"name": "${args.name}", "email": "${args.email}", "payoption": "${args.payoption}", "payamount": ${pay}, "startdate":"${startdate}","enddate":"still active"}`;
     company = JSON.parse(company);
@@ -155,7 +156,7 @@ const resolvers = {
       });
       return `Deleted company ${company.name}`;
     }
-  }, 
+  },
   /**************************************************************************************/
   /*                                 employee Functions                                 */
   /**************************************************************************************/
@@ -196,20 +197,18 @@ const resolvers = {
       "-" +
       ("0" + usaTime.toLocaleString()[0]).slice(-2) +
       "-" +
-      timeArr[2] +
-      " " +
-      timeArr[4];
+      timeArr[2];
     let startdate = timeinput;
     let min = Math.ceil(1001);
     let max = Math.floor(9999);
     let random = Math.floor(Math.random() * (max - min + 1)) + min;
-    
+
     let employee = await dbRtns.findAll(db, employees, {
       compname: `${args.compname}`,
     });
-    if ( employee) {
+    if (employee) {
       let doesExist = true;
-      while (doesExist) {        
+      while (doesExist) {
         let yes2 = employee.includes(random);
         if ((doesExist = yes2)) {
           random = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -227,26 +226,7 @@ const resolvers = {
       return results.insertedCount === 1 ? newemployee : newemployee;
     } else return `Employee ${found.empid} already exists`;
   },
-  updateemployeeemail: async (args) => {
-    let db = await dbRtns.getDBInstance();
-    let employee = await dbRtns.findOne(db, employees, {
-      empid: args.empid,
-    });
-    if (!employee) return `employee does not exist in collection`;
-    let updateResults = await dbRtns.updateOne(
-      db,
-      employees,
-      { _id: employee._id },
-      {
-        email: `${args.email}`,
-      }
-    );
-    employee = await dbRtns.findOne(db, employees, {
-      empid: args.empid,
-    });
-    return employee;
-  },
-  updateemployeedepartment: async (args) => {
+  updateemployee: async (args) => {
     let db = await dbRtns.getDBInstance();
     let employee = await dbRtns.findOne(db, employees, {
       empid: args.empid,
@@ -258,6 +238,8 @@ const resolvers = {
       { _id: employee._id },
       {
         department: `${args.department}`,
+        lastname: `${args.lastname}`,
+        email: `${args.email}`,
       }
     );
     employee = await dbRtns.findOne(db, employees, {
@@ -497,7 +479,7 @@ const resolvers = {
       }
       //make sure all codes are unique
     }
-    let newmeeting = `{"compname":"${args.compname}","meetingid":${random},"empid":${args.empid}, "date": "${args.date}", "starttime": "${args.starttime}", "message": "${args.message}"}`;
+    let newmeeting = `{"meetingid":${random},"empid":${args.empid}, "date": "${args.date}", "starttime": "${args.starttime}", "message": "${args.message}"}`;
     newmeeting = JSON.parse(newmeeting);
     let found = await dbRtns.findOne(db, meetings, {
       meetingid: random,
@@ -572,6 +554,303 @@ const resolvers = {
       });
       return `Deleted meeting post #${meeting.meetingid}`;
     }
+  },
+
+  /**************************************************************************************/
+  /*                               Payroll Functions                                    */
+  /**************************************************************************************/
+  addpayroll: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let payroll = await dbRtns.findAll(db, payrolls);
+    let id = payroll.length + 1;
+    let payamount = args.totalhrs * args.payrate;
+    var usaTime = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    usaTime = new Date(usaTime);
+    var timeStr = new Date() + 3600000 * -5.0;
+    var timeArr = timeStr.split(" ");
+    var timeinput =
+      timeArr[3] +
+      "-" +
+      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
+      "-" +
+      timeArr[2];
+    let startdate = timeinput;
+    let newpayroll = `{"prid": ${id},"empid":${args.empid}, "payrate": ${args.payrate}, "paycycle": "${args.paycycle}", "totalhrs": ${args.totalhrs}, "amount": ${payamount},"date":"${startdate}"}`;
+    newpayroll = JSON.parse(newpayroll);
+    let found = await dbRtns.findOne(db, payrolls, {
+      prid: id,
+      empid: args.empid,
+    });
+    if (!found) {
+      let results = await dbRtns.addOne(db, payrolls, newpayroll);
+      return results.insertedCount === 1 ? newpayroll : newpayroll;
+    } else return `payroll already on registered`;
+  },
+  getallpayrolls: async () => {
+    let db = await dbRtns.getDBInstance();
+    let payroll = await dbRtns.findAll(db, payrolls);
+    if (!payroll) return `no payrolls registered`;
+    else return payroll;
+  },
+  showspecificpayroll: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let payroll = await dbRtns.findOne(db, payrolls, {
+      prid: args.prid,
+    });
+    if (!payroll) return `payroll does not exist payroll registry`;
+    else return payroll;
+  },
+  showspecificemployeepayroll: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let payroll = await dbRtns.findAll(db, payrolls, {
+      empid: args.empid,
+    });
+    if (!payroll) return `payroll does not exist payroll registry`;
+    else return payroll;
+  },
+
+  /**************************************************************************************/
+  /*                               Timeoff Functions                                    */
+  /**************************************************************************************/
+  addtimeoff: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let timeoff = await dbRtns.findAll(db, timesoff);
+    let id = timeoff.length + 1;
+    var usaTime = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    usaTime = new Date(usaTime);
+    var timeStr = new Date() + 3600000 * -5.0;
+    var timeArr = timeStr.split(" ");
+    var timeinput =
+      timeArr[3] +
+      "-" +
+      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
+      "-" +
+      timeArr[2];
+    let startdate = timeinput;
+    let approved = false;
+    let newtimeoff = `{"toid": ${id},"empid":${args.empid}, "startdate": "${args.startdate}", "enddate": "${args.enddate}", "description": "${args.description}", "requestdate":"${startdate}", "approved": "${approved}"}`;
+    newtimeoff = JSON.parse(newtimeoff);
+    let found = await dbRtns.findOne(db, timesoff, {
+      toid: id,
+      empid: args.empid,
+    });
+    if (!found) {
+      let results = await dbRtns.addOne(db, timesoff, newtimeoff);
+      return results.insertedCount === 1 ? newtimeoff : newtimeoff;
+    } else return `timeoff already requested`;
+  },
+  getalltimeoff: async () => {
+    let db = await dbRtns.getDBInstance();
+    let timeoff = await dbRtns.findAll(db, timesoff);
+    if (!timeoff) return `no time off requested`;
+    else return timeoff;
+  },
+  showspecifictimeoff: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let timeoff = await dbRtns.findOne(db, timesoff, {
+      toid: args.toid,
+    });
+    if (!timeoff) return `time off is not registered`;
+    else return timeoff;
+  },
+  showspecificemployeetimeoff: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let timeoff = await dbRtns.findAll(db, timesoff, {
+      empid: args.empid,
+    });
+    if (!timeoff) return `time off request does not exist`;
+    else return timeoff;
+  },
+  updateapproval: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let timeoff = await dbRtns.findOne(db, timesoff, {
+      toid: args.toid,
+    });
+    if (!timeoff) return `time off request does not exist`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      timesoff,
+      { _id: timeoff._id },
+      {
+        approved: `${true}`,
+      }
+    );
+    timeoff = await dbRtns.findOne(db, timesoff, {
+      toid: args.toid,
+    });
+    return timeoff;
+  },
+  canceltimeoff: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let timeoff = await dbRtns.findOne(db, timesoff, {
+      toid: args.toid,
+    });
+    if (!timeoff) return `time off request does not exist`;
+    else {
+      let deletedmanager = await dbRtns.deleteOne(db, timesoff, {
+        _id: timeoff._id,
+      });
+      return `Deleted time off request #${timeoff.toid}`;
+    }
+  },
+
+  /**************************************************************************************/
+  /*                             Emergencies Functions                                  */
+  /**************************************************************************************/
+  addemergency: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let emergency = await dbRtns.findAll(db, emergencies);
+    let id = emergency.length + 1;
+    var usaTime = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    usaTime = new Date(usaTime);
+    var timeStr = new Date() + 3600000 * -5.0;
+    var timeArr = timeStr.split(" ");
+    var timeinput =
+      timeArr[3] +
+      "-" +
+      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
+      "-" +
+      timeArr[2];
+    let startdate = timeinput;
+    let newemergency = `{"emergid": ${id},"empid":${args.empid},"date":"${startdate}",  "description": "${args.description}"}`;
+    newemergency = JSON.parse(newemergency);
+    let found = await dbRtns.findOne(db, emergencies, {
+      emergid: id,
+      empid: args.empid,
+    });
+    if (!found) {
+      let results = await dbRtns.addOne(db, emergencies, newemergency);
+      return results.insertedCount === 1 ? newemergency : newemergency;
+    } else return `emergency already submitted`;
+  },
+  getallemergencies: async () => {
+    let db = await dbRtns.getDBInstance();
+    let emergency = await dbRtns.findAll(db, emergencies);
+    if (!emergency) return `emergency not submited`;
+    else return emergency;
+  },
+  showspecificemergency: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let emergency = await dbRtns.findOne(db, emergencies, {
+      emergid: args.emergid,
+    });
+    if (!emergency) return `emergency not submited`;
+    else return emergency;
+  },
+  showspecificemployeeemergency: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let emergency = await dbRtns.findAll(db, emergencies, {
+      empid: args.empid,
+    });
+    if (!emergency) return `emergency not submited`;
+    else return emergency;
+  },
+
+  /**************************************************************************************/
+  /*                               Signin Functions                                     */
+  /**************************************************************************************/
+  addsignin: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let signin = await dbRtns.findAll(db, signins);
+    let id = signin.length + 1;
+    var usaTime = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    usaTime = new Date(usaTime);
+    var timeStr = new Date() + 3600000 * -5.0;
+    var timeArr = timeStr.split(" ");
+    var timeinput =
+      timeArr[3] +
+      "-" +
+      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
+      "-" +
+      timeArr[2];
+    let date = timeinput;
+    let timestart = timeArr[4];
+    let newsignin = `{"signid": ${id},"empid":${args.empid},"starttime":"${timestart}", "endtime":" ","date":"${date}"}`;
+    newsignin = JSON.parse(newsignin);
+    let found = await dbRtns.findOne(db, signins, {
+      signin: id,
+      empid: args.empid,
+    });
+    if (!found) {
+      let results = await dbRtns.addOne(db, signins, newsignin);
+      return results.insertedCount === 1 ? newsignin : newsignin;
+    } else return `Employee already signedin`;
+  },
+  getallsignins: async () => {
+    let db = await dbRtns.getDBInstance();
+    let signin = await dbRtns.findAll(db, signins);
+    if (!signin) return `signin does not exist`;
+    else return signin;
+  },
+  showspecificsignin: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let signin = await dbRtns.findOne(db, signins, {
+      signid: args.signid,
+    });
+    if (!signin) return `signin does not exists`;
+    else return signin;
+  },
+  showspecificemployeesignin: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let signin = await dbRtns.findAll(db, signins, {
+      empid: args.empid,
+    });
+    if (!signin) return `signin does not exists`;
+    else return signin;
+  },
+  updatesignintimes: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let signin = await dbRtns.findOne(db, signins, {
+      signid: args.signid,
+    });
+    if (!signin) return `signin does not exist`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      signins,
+      { _id: signin._id },
+      {
+        starttime: `${args.starttime}`,
+        endtime: `${args.endtime}`,
+      }
+    );
+    signin = await dbRtns.findOne(db, signins, {
+      signid: args.signid,
+    });
+    return signin;
+  },
+  signout: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    var usaTime = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    usaTime = new Date(usaTime);
+    var timeStr = new Date() + 3600000 * -5.0;
+    var timeArr = timeStr.split(" ");
+    let endtime = timeArr[4];
+    let signin = await dbRtns.findOne(db, signins, {
+      signid: args.signid,
+    });
+    if (!signin) return `signin does not exist`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      signins,
+      { _id: signin._id },
+      {
+        endtime: `${endtime}`,
+      }
+    );
+    signin = await dbRtns.findOne(db, signins, {
+      signid: args.signid,
+    });
+    return signin;
   },
 };
 

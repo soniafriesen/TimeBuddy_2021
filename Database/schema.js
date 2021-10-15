@@ -156,7 +156,7 @@ type Mutation{
 
     """Employee Mutations"""
     addemployee(managerid:Int, department:String, firstname: String, lastname: String, email:String, dob: String): Employee
-    updateemployee(empid: Int,department:String,lastname:String, email: String): Employee   
+    updateemployee(managerid:Int,empid: Int,department:String,lastname:String, email: String): Employee   
 
     """Shift Mutations"""
     addshift(empid:Int, date:String, starttime:String, endtime:String): Shift

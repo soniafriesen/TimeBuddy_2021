@@ -117,7 +117,7 @@ const EmployeeInfo = (props) => {
     try {
       let response = null;
       let payload = null;
-      //just a regular employee
+
       //add employee collection
       response = await fetch(GRAPHURL, {
         method: "POST",
@@ -423,6 +423,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="managerid-field"
+                      required
                       onChange={manageridOnChange}
                       value={state.managerid}
                       label="#### (0 manager)"
@@ -432,6 +433,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="department-field"
+                      required
                       onChange={departmentOnChange}
                       value={state.department}
                       label="department"
@@ -441,6 +443,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="first-name-field"
+                      required
                       onChange={firstnameOnChange}
                       value={state.firstname}
                       label="first name"
@@ -450,6 +453,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="last-name-field"
+                      required
                       onChange={lastnameOnChange}
                       value={state.lastname}
                       label="last name"
@@ -459,6 +463,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="email-field"
+                      required
                       onChange={emailOnChange}
                       value={state.email}
                       label="XX@XX.XX"
@@ -468,6 +473,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="dob-field"
+                      required
                       onChange={dobOnChange}
                       value={state.dob}
                       label="YYYY-MM-DD"
@@ -476,9 +482,17 @@ const EmployeeInfo = (props) => {
                   </TableCell>
                   <TableCell component="th" scope="row" style={{ width: 200 }}>
                     <Button
-                      style={{ color: "green" }}
-                      variant="contained"
+                      color="primary"
+                      variant="outlined"
                       onClick={addEmployeeInfo}
+                      disabled={
+                        !state.managerid ||
+                        !state.department ||
+                        !state.firstname ||
+                        !state.lastname ||
+                        !state.dob ||
+                        !state.email
+                      }
                     >
                       ADD
                     </Button>
@@ -557,7 +571,7 @@ const EmployeeInfo = (props) => {
               />
             </div>
             <Button
-              style={{ color: theme.palette.secondary.main }}
+              color="secondary"
               variant="outlined"
               onClick={() => setShow({ show: true })}
             >

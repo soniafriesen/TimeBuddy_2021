@@ -237,6 +237,7 @@ const resolvers = {
       employees,
       { _id: employee._id },
       {
+        managerid: args.managerid,
         department: `${args.department}`,
         lastname: `${args.lastname}`,
         email: `${args.email}`,

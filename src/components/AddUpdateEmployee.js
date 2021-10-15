@@ -77,14 +77,14 @@ const EmployeeInfo = (props) => {
     setState({ show: true });
     findEmployee();
   };
-  const editdepartment = (e) => {
+  const oneditdepartment = (e) => {
     setState({ edepartment: e.target.value });
   };
-  const editlname = (e) => {
+  const oneditlname = (e) => {
     setState({ elastname: e.target.value });
   };
 
-  const editemail = (e) => {
+  const oneditemail = (e) => {
     setState({ eemail: e.target.value });
   };
   const fetchEmployeeInfo = async () => {
@@ -296,7 +296,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="editdepartment-field"
-                      onChange={editdepartment}
+                      onChange={oneditdepartment}
                       value={state.edepartment}
                       fullWidth
                     />
@@ -311,7 +311,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="editlname-field"
-                      onChange={editlname}
+                      onChange={oneditlname}
                       value={state.elastname}
                       fullWidth
                     />
@@ -319,7 +319,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="email-field"
-                      onChange={editemail}
+                      onChange={oneditemail}
                       value={state.eemail}
                       fullWidth
                     />
@@ -475,6 +475,9 @@ const EmployeeInfo = (props) => {
               </TableCell>
               <TableCell component="th" scope="row">
                 DOB
+              </TableCell>
+              <TableCell component="th" scope="row">
+                Start date
               </TableCell>
             </TableRow>
             {state.resArr.map((row) => (

@@ -89,6 +89,9 @@ const EmployeeInfo = (props) => {
   const oneditemail = (e) => {
     setState({ eemail: e.target.value });
   };
+  const oneditmangerid = (e) => {
+    setState({ emanagerid: e.target.value });
+  };
   const fetchEmployeeInfo = async () => {
     try {
       props.dataFromChild("running setup...");
@@ -178,7 +181,7 @@ const EmployeeInfo = (props) => {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` mutation { updateemployee (empid: ${state.eempid}, department: "${state.edepartment}", lastname:"${state.elastname}", email: "${state.eemail}")
+          query: ` mutation { updateemployee (managerid: ${state.emanagerid}, empid: ${state.eempid}, department: "${state.edepartment}", lastname:"${state.elastname}", email: "${state.eemail}")
             { managerid, department, firstname, lastname, email, dob,startdate  }}`,
         }),
       });
@@ -301,6 +304,7 @@ const EmployeeInfo = (props) => {
                   <TableCell component="th" scope="row">
                     <TextField
                       id="editmanagerid-field"
+                      onChange={oneditmangerid}
                       value={state.emanagerid}
                       fullWidth
                     />
@@ -471,13 +475,16 @@ const EmployeeInfo = (props) => {
                     />
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    <TextField
-                      id="dob-field"
-                      required
+                    <input
+                      style={{ margin: "10px", width: "120px" }}
+                      fullWidth
+                      label="Date"
+                      variant="standard"
+                      type="date"
+                      margin="large"
                       onChange={dobOnChange}
                       value={state.dob}
-                      label="YYYY-MM-DD"
-                      fullWidth
+                      required
                     />
                   </TableCell>
                   <TableCell component="th" scope="row" style={{ width: 200 }}>

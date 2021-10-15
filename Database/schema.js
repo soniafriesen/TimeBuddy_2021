@@ -22,11 +22,35 @@ type Query {
  getspecificpoolshift(shiftid:Int):Shiftpool
  removeshiftfrompool(shiftid:Int, empid:Int):String
 
-
  """ Meeting query """
  getallmeetings:[Meeting]
  showspecificmeeting(meetingid:Int):Meeting
  removemeeting(meetingid:Int):String
+
+ """ Payroll query """
+ getallpayrolls:[Payroll]
+ showspecificpayroll(prid:Int):Payroll
+ showspecificemployeepayroll(empid:Int):[Payroll]
+
+ """ Timeoff query """
+ getalltimeoff:[Timeoff]
+ showspecifictimeoff(toid:Int):Timeoff
+ showspecificemployeetimeoff(empid:Int):[Timeoff]
+ canceltimeoff(toid:Int):String
+
+ """ Emergency query """
+ getallemergencies:[Emergency]
+ showspecificemergency(emergid:Int):Emergency
+ showspecificemployeeemergency(empid:Int):[Emergency]
+
+ """ Login query """
+ getalllogins:[Login]
+ showspecificemployeelogin(empid:Int):Login
+
+ """ Signin query """
+ getallsignins:[Signin]
+ showspecificsignin(signid:Int): Signin
+ showspecificemployeesignin(empid:Int):[Signin]
 
 }
 
@@ -78,6 +102,51 @@ type Meeting{
     message:String,
 }
 
+"""  --Payroll Type--   """
+type Payroll{
+    prid:Int,
+    empid:Int,
+    payrate:Float,
+    paycycle:String,
+    totalhrs:Float,
+    amount:Float,
+    date:String,
+}
+
+"""  --Timeoff Type--   """
+type Timeoff{
+    toid:Int,
+    empid:Int,
+    startdate:String,
+    enddate:String,
+    description:String,
+    requestdate:String,
+    approved:String,
+}
+
+"""  --Emergency Type--   """
+type Emergency{ 
+    emergid:Int,
+    empid:Int,
+    date:String,    
+    description:String,    
+}
+
+"""  --Login Type--   """
+type Login{       
+    email:String,      
+    password:String,    
+}
+
+"""  --Signin/out Type--   """
+type Signin{  
+    signid:Int,     
+    empid:Int,
+    starttime:String,
+    endtime:String,
+    date:String,  
+}
+
 """ --Mutations Types--"""
 type Mutation{ 
 
@@ -87,8 +156,7 @@ type Mutation{
 
     """Employee Mutations"""
     addemployee(managerid:Int, department:String, firstname: String, lastname: String, email:String, dob: String): Employee
-    updateemployeeemail(empid: Int,email: String): Employee
-    updateemployeedepartment(empid: Int, department:String): Employee 
+    updateemployee(empid: Int,department:String,lastname:String, email: String): Employee   
 
     """Shift Mutations"""
     addshift(empid:Int, date:String, starttime:String, endtime:String): Shift
@@ -103,6 +171,24 @@ type Mutation{
     postameeting(empid:Int,date:String,starttime:String,message:String): Meeting
     changemeetingtime(meetingid:Int, starttime:String):Meeting
     changemeetingdate(meetingid:Int, date:String):Meeting
+    
+    """Payroll Type"""
+    addpayroll(empid:Int, payrate:Float, paycycle:String,totalhrs:Float): Payroll  
+    
+    """Timeoff Type"""    
+    addtimeoff(empid:Int, startdate:String,enddate:String,description:String): Timeoff
+    updateapproval(toid:Int):Timeoff
+
+    """Emergency Type"""    
+    addemergency(empid:Int,description:String): Emergency
+
+    """Login Type"""
+    addlogin(email:String, password:String):Login
+
+    """Signin Type"""
+    addsignin(empid:Int):Signin 
+    updatesignintimes(signid:Int, starttime:String,endtime:String):Signin
+    signout(signid:Int):Signin  
 }
 `);
 module.exports = { schema };

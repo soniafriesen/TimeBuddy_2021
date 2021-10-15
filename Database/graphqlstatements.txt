@@ -11,59 +11,92 @@ mutation{updatecompany(name:"Test Company",email:"tempCEmail@abc.ca",payoption:"
 {deletespecificcompany(name:"Test Company",email:"tempCEmail@abc.ca")}
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-+                          Manager Statements                         +
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-mutation{addmanager(compname:"Test Company", department:"IT",firstname:"Tester",lastname:"App",email:"ta@test.ca",dob:"1978-11-05")
-  {compname,department,empid,firstname,lastname,email,dob,startdate}}
-{getallmanagers(compname:"Test Company"){compname,department,empid,firstname,lastname,email,dob,startdate}}
-{getspecificmanager(empid:1100){compname,department,empid,firstname,lastname,email,dob,startdate}}
-mutation{updatemanageremail(empid:1100,email:"newtest@email.ca"){compname,department,empid,firstname,lastname,email,dob,startdate}}
-mutation{updatemanagerdepartment(empid:1100,department:"HR"){compname,department,empid,firstname,lastname,email,dob,startdate}}
-{deletemanager(empid:1100)}
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 +                          Employee Statements                        +
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-mutation{addemployee(compname:"Test Company",managerid:3865,department:"IT",firstname:"EMPTest",lastname:"Stanley",email:"ets@avc.ca",dob:"1957-12-09")
+mutation{addemployee(managerid:3865,department:"IT",firstname:"EMPTest",lastname:"Stanley",email:"ets@avc.ca",dob:"1957-12-09")
 }
-{getallemployees(compname:"Test Company"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
-{getspecificemployee(empid:1991){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
-mutation{updateemployeeemail(empid:1991,email:"stanleyET@abc.ca"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
-mutation{updateemployeedepartment(empid:1991,department:"Security"){compname,managerid,department,empid,firstname,lastname,dob,startdate}}
+{getallemployees(managerid,department,empid,firstname,lastname,dob,startdate}}
+{getspecificemployee(empid:1991){managerid,department,empid,firstname,lastname,dob,startdate}}
+mutation{updateemployeeemail(empid:1991,email:"stanleyET@abc.ca"){managerid,department,empid,firstname,lastname,dob,startdate}}
+mutation{updateemployeedepartment(empid:1991,department:"Security"){managerid,department,empid,firstname,lastname,dob,startdate}}
 {deleteemployee(empid:1991)}
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 +                           Shift Statements                          +
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-mutation{addshift(compname:"Test Company",empid:1923,date:"Dec 22nd 2021",starttime:"1:00PM",endtime:"10:00PM")
-  {compname,shiftid,empid,date,starttime,endtime}}
-{getallshifts(compname:"Test Company"){compname,shiftid,empid,date,starttime,endtime}}
-{getspecificshift(shiftid:2267413){compname,shiftid,empid,date,starttime,endtime}}
-mutation{updateshiftstarttime(shiftid:2267413,starttime:"12:00PM"){compname,shiftid,empid,date,starttime,endtime}}
-mutation{updateshiftendtime(shiftid:2267413,endtime:"8:30PM"){compname,shiftid,empid,date,starttime,endtime}}
-mutation{switchshift(shiftid:2267413,empid:2229){compname,shiftid,empid,date,starttime,endtime}}
+mutation{addshift(mpid:1923,date:"Dec 22nd 2021",starttime:"1:00PM",endtime:"10:00PM")
+  {shiftid,empid,date,starttime,endtime}}
+{getallshifts(shiftid,empid,date,starttime,endtime}}
+{getspecificshift(shiftid:2267413){shiftid,empid,date,starttime,endtime}}
+mutation{updateshiftstarttime(shiftid:2267413,starttime:"12:00PM"){shiftid,empid,date,starttime,endtime}}
+mutation{updateshiftendtime(shiftid:2267413,endtime:"8:30PM"){shiftid,empid,date,starttime,endtime}}
+mutation{switchshift(shiftid:2267413,empid:2229){shiftid,empid,date,starttime,endtime}}
 {deleteshift(shiftid:6538280)}
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 +                       Shift Pool Statements                         +
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-mutation{addshifttopool(compname:"Test Company",shiftid:7064135){compname,shiftid,date,starttime,endtime}}
-{getallinpool(compname:"Test Company"){compname,shiftid,date,starttime,endtime}}  
-{getspecificpoolshift(shiftid:7064135){compname,shiftid,date,starttime,endtime}}
+mutation{addshifttopool(shiftid:7064135){shiftid,date,starttime,endtime}}
+{getallinpool(shiftid,date,starttime,endtime}}  
+{getspecificpoolshift(shiftid:7064135){shiftid,date,starttime,endtime}}
 {removeshiftfrompool(shiftid:4518016,empid:2435)}
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 +                        Meetings Statements                          +
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-mutation{postameeting(compname:"Test Company",empid:8575,date:"Dec 14th 2021",starttime:"9:30AM",message:"Testing meeting boards")
-  {compname,meetingid,empid,starttime,message}}
-{getallmeetings(compname:"Test Company"){compname,meetingid,empid,date,starttime,message}}
-{showspecificmeeting(meetingid:4154651){compname,meetingid,empid,date,starttime,message}}
-mutation{changemeetingdate(meetingid:4154651, date:"Nov 29th 2021"){compname,meetingid,empid,date,starttime,message}}
-mutation{changemeetingtime(meetingid:4154651,starttime:"11:30AM"){compname,meetingid,empid,date,starttime,message}}
+mutation{postameeting(empid:8575,date:"Dec 14th 2021",starttime:"9:30AM",message:"Testing meeting boards")
+  {meetingid,empid,starttime,message}}
+{getallmeetings(meetingid,empid,date,starttime,message}}
+{showspecificmeeting(meetingid:4154651){meetingid,empid,date,starttime,message}}
+mutation{changemeetingdate(meetingid:4154651, date:"Nov 29th 2021"){meetingid,empid,date,starttime,message}}
+mutation{changemeetingtime(meetingid:4154651,starttime:"11:30AM"){meetingid,empid,date,starttime,message}}
 {removemeeting(meetingid:615021)}  
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                        Payroll Statements                           +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{addpayroll(empid:5678,payrate:15 ,paycycle:"Dec 1 2021 - Dec 13 2021",totalhrs:35)
+  {prid,empid,payrate,paycycle,totalhrs,amount,date}}
+{getallpayrolls{prid,empid,payrate,paycycle,totalhrs,amount,date}}
+{showspecificpayroll(prid:1){prid,empid,payrate,paycycle,totalhrs,amount,date}}
+{showspecificemployeepayroll(empid:5678){prid,empid,payrate,paycycle,totalhrs,amount,date}}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                        Timeoff Statements                           +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{addtimeoff(empid:1234,startdate:"Dec 20th 2021",enddate:"Jan 2nd 2022",description:"Family vacation")
+  {toid,empid,startdate,enddate,description,approved,requestdate}}
+{getalltimeoff{toid,empid,startdate,enddate,description,approved,requestdate}}
+{showspecifictimeoff(toid:1){toid,empid,startdate,enddate,description,approved,requestdate}}
+{showspecificemployeetimeoff(empid:1234){toid,empid,startdate,enddate,description,approved,requestdate}}
+mutation{updateapproval(toid:1){toid,empid,startdate,enddate,description,approved,requestdate}}
+{canceltimeoff(toid:1)}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                       Emergencies Statements                        +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{addemergency(empid:1234,description:"Family loss"){emergid,empid,description,date}}
+{getallemergencies{emergid,empid,description,date}}
+{showspecificemergency(emergid:1){emergid,empid,description,date}}
+{showspecificemployeeemergency(empid:1234){emergid,empid,description,date}}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                         Signin Statements                           +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mutation{addsignin(empid:1234){signid,empid,starttime,endtime,date}}
+{getallsignins{signid,empid,starttime,endtime,date}}
+{showspecificsignin(signid:1){signid,empid,starttime,endtime,date}}
+{showspecificemployeesignin(empid:1234){signid,empid,starttime,endtime,date}}
+mutation{signout(signid:1){signid,empid,starttime,endtime,date}}
+mutation{updatesignintimes(signid:1,starttime:"18:00:00",endtime:"22:30:00")
+  {signid,empid,starttime,endtime,date}}
+
+

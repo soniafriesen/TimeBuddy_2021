@@ -106,7 +106,7 @@ const EmployeeInfo = (props) => {
         `added employee ${payload.data.addemployee.firstname}`
       );
       setState({
-        managerid: 0,
+        managerid: null,
         department: "",
         empid: 0,
         firstname: "",
@@ -135,13 +135,13 @@ const EmployeeInfo = (props) => {
         `Employee #${payload.data.updateemployee.empid}, ${payload.data.updateemployee.first} ${payload.data.updateemployee.lastname} updated!`
       );
       setState({
-        emanagerid: 0,
-        edepartment: "",
-        eempid: 0,
-        efirstname: "",
-        elastname: "",
-        eemail: "",
-        edob: "",
+        managerid: 0,
+        department: "",
+        empid: 0,
+        firstname: "",
+        lastname: "",
+        email: "",
+        dob: "",
       });
       fetchEmployeeInfo();
     } catch (error) {
@@ -161,7 +161,7 @@ const EmployeeInfo = (props) => {
       props.dataFromChild(`${payload.data.deleteemployee}`);
       console.log(payload.data.deleteemployee);
       setState({
-        managerid: 0,
+        managerid: null,
         department: "",
         empid: 0,
         firstname: "",

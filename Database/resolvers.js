@@ -29,16 +29,13 @@ const resolvers = {
     let db = await dbRtns.getDBInstance();
     if (args.payoption === "monthly") pay = 25.99; //temp amount
     pay = 325.0;
-    var usaTime = new Date().toLocaleString("en-US", {
-      timeZone: "America/New_York",
-    });
     usaTime = new Date(usaTime);
     var timeStr = new Date() + 3600000 * -5.0;
     var timeArr = timeStr.split(" ");
     var timeinput =
       timeArr[3] +
       "-" +
-      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
+      usaTime.toLocaleString().slice(5, 7) +
       "-" +
       timeArr[2];
     let startdate = timeinput;
@@ -195,7 +192,7 @@ const resolvers = {
     var timeinput =
       timeArr[3] +
       "-" +
-      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
+      usaTime.toLocaleString().slice(5, 7) +
       "-" +
       timeArr[2];
     let startdate = timeinput;
@@ -565,16 +562,13 @@ const resolvers = {
     let payroll = await dbRtns.findAll(db, payrolls);
     let id = payroll.length + 1;
     let payamount = args.totalhrs * args.payrate;
-    var usaTime = new Date().toLocaleString("en-US", {
-      timeZone: "America/New_York",
-    });
     usaTime = new Date(usaTime);
     var timeStr = new Date() + 3600000 * -5.0;
     var timeArr = timeStr.split(" ");
     var timeinput =
       timeArr[3] +
       "-" +
-      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
+      usaTime.toLocaleString().slice(5, 7) +
       "-" +
       timeArr[2];
     let startdate = timeinput;
@@ -619,16 +613,13 @@ const resolvers = {
     let db = await dbRtns.getDBInstance();
     let timeoff = await dbRtns.findAll(db, timesoff);
     let id = timeoff.length + 1;
-    var usaTime = new Date().toLocaleString("en-US", {
-      timeZone: "America/New_York",
-    });
     usaTime = new Date(usaTime);
     var timeStr = new Date() + 3600000 * -5.0;
     var timeArr = timeStr.split(" ");
     var timeinput =
       timeArr[3] +
       "-" +
-      ("0" + usaTime.toLocaleString()[0]).slice(-2) +
+      usaTime.toLocaleString().slice(5, 7) +
       "-" +
       timeArr[2];
     let startdate = timeinput;

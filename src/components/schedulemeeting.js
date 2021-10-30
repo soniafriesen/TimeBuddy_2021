@@ -2,6 +2,7 @@ import React from "react";
 import { TextField, Button, Typography, CardContent } from "@material-ui/core";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import { getToken } from "./token";
 
 export default function ScheduleMeeting() {
   const options = [
@@ -17,9 +18,11 @@ export default function ScheduleMeeting() {
     
 
     <CardContent>
-      <Typography variant="h4" style={{ marginBottom: "0px", marginLeft: "0%" }} color="primary">
+      <Typography variant="h4" color="primary">
         Schedule Meeting
       </Typography>
+
+      {getToken() ?
 
       <form
         style={{
@@ -33,7 +36,7 @@ export default function ScheduleMeeting() {
       >
         <div>
           <TextField
-            fullWidth
+          fullWidth
             label="Title"
             variant="standard"
             margin="dense"
@@ -45,7 +48,6 @@ export default function ScheduleMeeting() {
             Date
             <input
               style={{ margin: "10px", width: "120px" }}
-              fullWidth
               label="Date"
               variant="standard"
               type="date"
@@ -57,7 +59,6 @@ export default function ScheduleMeeting() {
             Time
             <input
               style={{ margin: "10px", width: "120px" }}
-              fullWidth
               label="Time"
               type="time"
               variant="standard"
@@ -120,6 +121,8 @@ export default function ScheduleMeeting() {
           </Button>
         </div>
       </form>
+:
+<Typography color="secondary">Not logged in</Typography>}
     </CardContent>
   );
 }

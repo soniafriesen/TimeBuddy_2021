@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { TextField, Button, Typography, CardContent } from "@material-ui/core";
+import { getToken } from "./token";
 
 export default function ScheduleMeeting() {
+
+    function login() {
+        if(email && password) {
+            console.log("logging in");
+        const userToken = {"token":"test"};
+        sessionStorage.setItem('token', JSON.stringify(userToken));
+        getToken();
+    }
+      }
+
+      const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
   return (
     <CardContent>
-      <Typography variant="h4" style={{ marginBottom: "0px", marginLeft: "0%" }} color="primary">
+      <Typography variant="h4" color="primary">
         Login
       </Typography>
+
+      {!getToken() ?
 
       <form
         style={{
@@ -27,6 +43,7 @@ export default function ScheduleMeeting() {
             type="email"
             size="small"
             required
+            onChange={e => setEmail(e.target.value)}
           />
 
           <TextField
@@ -37,21 +54,25 @@ export default function ScheduleMeeting() {
             type="password"
             size="small"
             required
+            onChange={e => setPassword(e.target.value)}
           />
 
         </div>
 
         <div>
           <Button
-            style={{ marginTop: "20px" }}
-            type="submit"
-            variant="contained"
-            color="primary"
+          onClick={() => login()}
+          style={{ marginTop: "20px" }}
+          variant="contained"
+          color="primary"
+          type="submit"
           >
-            SUBMIT
+            LOGIN
           </Button>
         </div>
       </form>
+:
+<Typography color="secondary">Logged in</Typography>}
     </CardContent>
   );
 }

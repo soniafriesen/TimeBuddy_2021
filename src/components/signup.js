@@ -4,7 +4,7 @@ import { TextField, Button, Typography, CardContent } from "@material-ui/core";
 export default function SignUp() {
   return (
     <CardContent>
-      <Typography variant="h4" style={{ marginBottom: "0px", marginLeft: "0%" }} color="primary">
+      <Typography variant="h4" color="primary">
         Signup
       </Typography>
 

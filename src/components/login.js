@@ -1,11 +1,11 @@
 import React from "react";
 import { TextField, Button, Typography, CardContent } from "@material-ui/core";
 
-export default function SignUp() {
+export default function ScheduleMeeting() {
   return (
     <CardContent>
       <Typography variant="h4" style={{ marginBottom: "0px", marginLeft: "0%" }} color="primary">
-        Signup
+        Login
       </Typography>
 
       <form
@@ -19,26 +19,6 @@ export default function SignUp() {
         align="center"
       >
         <div>
-
-<TextField
-  fullWidth
-  label="First Name"
-  variant="standard"
-  margin="dense"
-  type="text"
-  size="small"
-  required
-/>
-
-<TextField
-  fullWidth
-  label="Last Name"
-  variant="standard"
-  margin="dense"
-  type="text"
-  size="small"
-  required
-/>
           <TextField
             fullWidth
             label="Email"
@@ -61,17 +41,17 @@ export default function SignUp() {
 
         </div>
 
-      <div>
-        <Button
-          style={{ marginTop: "20px" }}
-          type="submit"
-          variant="contained"
-          color="primary"
-        >
-          Signup
-        </Button>
-      </div>
-    </form>
+        <div>
+          <Button
+            style={{ marginTop: "20px" }}
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
+            SUBMIT
+          </Button>
+        </div>
+      </form>
     </CardContent>
   );
 }

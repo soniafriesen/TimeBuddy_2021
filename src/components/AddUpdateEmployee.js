@@ -396,7 +396,7 @@ const EmployeeInfo = (props) => {
   return (
     <MuiThemeProvider theme={theme}>
       <Card>
-        <Typography variant="h4" align="center">
+      <Typography variant="h4" style={{ marginTop: "10px" }} align="center" color="primary">
           New Employee
         </Typography>
         <CardContent>
@@ -569,7 +569,7 @@ const EmployeeInfo = (props) => {
             ))}
           </div>
           <div className="EmployeeInfo" align="center">
-            <div style={{ width: 200 }}>
+            <div style={{ width: "100%" }}>
               <TextField
                 id="edit-field"
                 onChange={onidchange}

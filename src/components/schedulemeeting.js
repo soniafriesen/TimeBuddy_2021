@@ -13,17 +13,21 @@ export default function ScheduleMeeting() {
   const animatedComponents = makeAnimated();
 
   return (
+
+    
+
     <CardContent>
-      <Typography variant="h4" style={{ marginTop: "20px" }} color="primary">
+      <Typography variant="h4" style={{ marginBottom: "0px", marginLeft: "0%" }} color="primary">
         Schedule Meeting
       </Typography>
 
       <form
         style={{
           width: "85%",
-          marginLeft: "5%",
+          marginLeft: "10px",
           alignItems: "center",
           justifyContent: "center",
+          maxWidth: "400px"
         }}
         align="center"
       >

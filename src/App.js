@@ -8,6 +8,7 @@ import Home from "./components/home";
 import Login from "./components/login";
 import Signup from "./components/signup";
 import ScheduleMeeting from "./components/schedulemeeting";
+import Shifts from "./components/shifts";
 import EmployeeInfo from "./components/AddUpdateEmployee";
 import { getToken } from "./components/token";
 import {
@@ -46,34 +47,35 @@ const App = () => {
 
   const logout = () => {
     console.log("logout");
-    sessionStorage.removeItem('token'); 
+    sessionStorage.removeItem("token");
     window.location.reload(false);
-  }
+  };
 
   return (
-
-    
     <MuiThemeProvider theme={theme}>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" color="inherit">
             TimeBuddy
           </Typography>
-          {getToken() ?
-          <div style={{marginLeft:"30%",}}>USER NAME HERE
-          
-          <Button
-          style={{backgroundColor: 'transparent', marginLeft:"00%", color:"rgba(44, 214, 176, 1)"}}
-          onClick={logout}
-          color="primary"
-          align="right"
-        >
-          Logout
-        </Button>
-          </div>
-          
-        :null}
-        
+          {getToken() ? (
+            <div style={{ marginLeft: "30%" }}>
+              USER NAME HERE
+              <Button
+                style={{
+                  backgroundColor: "transparent",
+                  marginLeft: "00%",
+                  color: "rgba(44, 214, 176, 1)",
+                }}
+                onClick={logout}
+                color="primary"
+                align="right"
+              >
+                Logout
+              </Button>
+            </div>
+          ) : null}
+
           <IconButton
             onClick={handleClick}
             color="inherit"
@@ -88,34 +90,41 @@ const App = () => {
             open={Boolean(state.anchorEl)}
             onClose={handleClose}
           >
-      
             <MenuItem component={Link} to="/home" onClick={handleClose}>
               Home
             </MenuItem>
-            {!getToken() ? <div>
-            <MenuItem component={Link} to="/login" onClick={handleClose}>
-              Login
-            </MenuItem>
-            <MenuItem component={Link} to="/signup" onClick={handleClose}>
-              Signup
-            </MenuItem></div>
-            :null}
+            {!getToken() ? (
+              <div>
+                <MenuItem component={Link} to="/login" onClick={handleClose}>
+                  Login
+                </MenuItem>
+                <MenuItem component={Link} to="/signup" onClick={handleClose}>
+                  Signup
+                </MenuItem>
+              </div>
+            ) : null}
 
-            { getToken() ? <div>
-            <MenuItem component={Link} to="/employees" onClick={handleClose}>
-              Employees
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/schedulemeeting"
-              onClick={handleClose}
-            >
-              Schedule Meetings
-            </MenuItem>
-            </div>
-            : null
-             }
-
+            {getToken() ? (
+              <div>
+                <MenuItem
+                  component={Link}
+                  to="/employees"
+                  onClick={handleClose}
+                >
+                  Employees
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/schedulemeeting"
+                  onClick={handleClose}
+                >
+                  Schedule Meetings
+                </MenuItem>
+                <MenuItem component={Link} to="/shifts" onClick={handleClose}>
+                  Shifts
+                </MenuItem>
+              </div>
+            ) : null}
           </Menu>
         </Toolbar>
       </AppBar>
@@ -125,6 +134,7 @@ const App = () => {
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/schedulemeeting" component={ScheduleMeeting} />
+        <Route path="/shifts" component={Shifts} />
         <Route
           path="/employees"
           render={() => <EmployeeInfo dataFromChild={msgFromChild} />}

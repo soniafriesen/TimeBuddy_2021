@@ -9,6 +9,7 @@ const {
   timesoff,
   emergencies,
   signins,
+  logins,
 } = require("./config");
 const resolvers = {
   /**************************************************************************************/
@@ -742,6 +743,63 @@ const resolvers = {
     });
     if (!emergency) return `emergency not submited`;
     else return emergency;
+  },
+
+  /**************************************************************************************/
+  /*                                Login Functions                                     */
+  /**************************************************************************************/
+  addlogin: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    var usaTime = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    usaTime = new Date(usaTime);
+    var timeStr = new Date() + 3600000 * -5.0;
+    var timeArr = timeStr.split(" ");
+    var timeinput =
+      timeArr[3] +
+      "-" +
+      usaTime.toLocaleString().slice(5, 7) +
+      "-" +
+      timeArr[2];
+    let startdate = timeinput;
+    let login = `{"email": "${args.email}","password":"${args.password}","datecreated":"${startdate}"}`;
+    login = JSON.parse(login);
+    let found = await dbRtns.findOne(db, logins, {
+      email: args.email,
+      password: args.password,
+    });
+    if (!found) {
+      let results = await dbRtns.addOne(db, logins, login);
+      return results.insertedCount === 1 ? login : login;
+    } else return `login already exists`;
+  },
+  getalllogins: async () => {
+    let db = await dbRtns.getDBInstance();
+    let login = await dbRtns.findAll(db, logins);
+    if (!login) return `signin does not exist`;
+    else return login;
+  },
+  showspecificemployeelogin: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let login = await dbRtns.findOne(db, logins, {
+      email: args.email,
+    });
+    if (!login) return `login does not exists`;
+    else return login;
+  },
+  removelogin: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let login = await dbRtns.findOne(db, logins, {
+      email: args.email,
+    });
+    if (!login) return `login does not exist`;
+    else {
+      let deletedlogin = await dbRtns.deleteOne(db, logins, {
+        _id: login._id,
+      });
+      return `Removed Login for ${login.email}`;
+    }
   },
 
   /**************************************************************************************/

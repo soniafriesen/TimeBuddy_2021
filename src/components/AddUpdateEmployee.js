@@ -134,6 +134,20 @@ const EmployeeInfo = (props) => {
       props.dataFromChild(
         `added employee ${payload.data.addemployee.firstname}`
       );
+
+      //give then a temperary login
+      let min = Math.ceil(1001);
+      let max = Math.floor(9999);
+      let random = Math.floor(Math.random() * (max - min + 1)) + min;
+      response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: ` mutation{addlogin(email:"${state.email}",password:"${random}"){email,password,datecreated}} `,
+        }),
+      });
+      payload = await response.json();
+      props.dataFromChild(`added login for ${payload.data.addlogin.email}`);
       setState({
         managerid: null,
         department: "",
@@ -396,7 +410,12 @@ const EmployeeInfo = (props) => {
   return (
     <MuiThemeProvider theme={theme}>
       <Card>
-      <Typography variant="h4" style={{ marginTop: "10px" }} align="center" color="primary">
+        <Typography
+          variant="h4"
+          style={{ marginTop: "10px" }}
+          align="center"
+          color="primary"
+        >
           New Employee
         </Typography>
         <CardContent>

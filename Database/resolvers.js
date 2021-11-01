@@ -788,6 +788,25 @@ const resolvers = {
     if (!login) return `login does not exists`;
     else return login;
   },
+  changepassword: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let login = await dbRtns.findOne(db, logins, {
+      email: args.email,
+    });
+    if (!signin) return `login does not exist`;
+    let updateResults = await dbRtns.updateOne(
+      db,
+      logins,
+      { _id: login._id },
+      {
+        password: `${args.password}`,
+      }
+    );
+    login = await dbRtns.findOne(db, logins, {
+      email: args.email,
+    });
+    return login;
+  },
   removelogin: async (args) => {
     let db = await dbRtns.getDBInstance();
     let login = await dbRtns.findOne(db, logins, {

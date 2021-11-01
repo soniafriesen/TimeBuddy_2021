@@ -185,6 +185,7 @@ type Mutation{
 
     """Login Type"""
     addlogin(email:String, password:String):Login
+    changepassword(email:String, password:String):Login
     removelogin(email:String): String
 
     """Signin Type"""

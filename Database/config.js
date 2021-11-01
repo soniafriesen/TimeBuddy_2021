@@ -10,6 +10,7 @@ module.exports = {
   timesoff:process.env.TIMEOFFCOLLECTION,
   emergencies:process.env.EMERGENCYCOLLECTION,
   signins:process.env.SIGNINCOLLECTION,
+  logins:process.env.LOGINCOLLECTION,
   atlas: process.env.DBURL,
   appdb: process.env.DB,
   port: process.env.PORT,

@@ -45,7 +45,7 @@ type Query {
 
  """ Login query """
  getalllogins:[Login]
- showspecificemployeelogin(empid:Int):Login
+ showspecificemployeelogin(email:String):Login
 
  """ Signin query """
  getallsignins:[Signin]
@@ -135,7 +135,8 @@ type Emergency{
 """  --Login Type--   """
 type Login{       
     email:String,      
-    password:String,    
+    password:String,
+    datecreated:String,    
 }
 
 """  --Signin/out Type--   """
@@ -184,6 +185,7 @@ type Mutation{
 
     """Login Type"""
     addlogin(email:String, password:String):Login
+    removelogin(email:String): String
 
     """Signin Type"""
     addsignin(empid:Int):Signin 

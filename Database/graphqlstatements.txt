@@ -99,4 +99,11 @@ mutation{signout(signid:1){signid,empid,starttime,endtime,date}}
 mutation{updatesignintimes(signid:1,starttime:"18:00:00",endtime:"22:30:00")
   {signid,empid,starttime,endtime,date}}
 
-
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                          Login Statements                           +
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+mutation{addlogin(email:"s_friesen@fanshaweonline.ca",password:"random1234"){email,password,datecreated}} 
+{getalllogins{email,password,datecreated}}
+{showspecificemployeelogin(email:"s_friesen@fanshaweonline.ca")
+  {email,password,datecreated}}
+mutation{removelogin(email:"s_friesen@fanshaweonline.ca")}

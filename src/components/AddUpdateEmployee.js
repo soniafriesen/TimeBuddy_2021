@@ -16,6 +16,7 @@ import {
   Modal,
   Box,
 } from "@material-ui/core";
+import UpdateModal from "./UpdateModal";
 const GRAPHURL = "http://localhost:5000/graphql";
 const EmployeeInfo = (props) => {
   //employee fields, same as the db schema
@@ -31,14 +32,6 @@ const EmployeeInfo = (props) => {
     dob: "",
     show: false,
     editid: null,
-    emanagerid: null,
-    edepartment: "",
-    eempid: null,
-    efirstname: "",
-    elastname: "",
-    eemail: "",
-    estartdate: "",
-    edob: "",
   };
   //modal variables
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -77,20 +70,6 @@ const EmployeeInfo = (props) => {
   };
   const setShow = (e) => {
     setState({ show: true });
-    findEmployee();
-  };
-  const oneditdepartment = (e) => {
-    setState({ edepartment: e.target.value });
-  };
-  const oneditlname = (e) => {
-    setState({ elastname: e.target.value });
-  };
-
-  const oneditemail = (e) => {
-    setState({ eemail: e.target.value });
-  };
-  const oneditmangerid = (e) => {
-    setState({ emanagerid: e.target.value });
   };
   const fetchEmployeeInfo = async () => {
     try {
@@ -163,80 +142,42 @@ const EmployeeInfo = (props) => {
       console.log(error);
     }
   };
-
-  const findEmployee = async () => {
-    try {
-      let response = await fetch(GRAPHURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          query: ` {getspecificemployee(empid:${state.editid}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
-        }),
-      });
-      let payload = await response.json();
-      setState({
-        emanagerid: payload.data.getspecificemployee.managerid,
-        edepartment: payload.data.getspecificemployee.department,
-        eempid: payload.data.getspecificemployee.empid,
-        efirstname: payload.data.getspecificemployee.firstname,
-        elastname: payload.data.getspecificemployee.lastname,
-        eemail: payload.data.getspecificemployee.email,
-        estartdate: payload.data.getspecificemployee.startdate,
-        edob: payload.data.getspecificemployee.dob,
-        editid: null,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const updateEmployee = async () => {
-    try {
-      let response = await fetch(GRAPHURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          query: ` mutation { updateemployee (managerid: ${state.emanagerid}, empid: ${state.eempid}, department: "${state.edepartment}", lastname:"${state.elastname}", email: "${state.eemail}")
-            { managerid, department, firstname, lastname, email, dob,startdate  }}`,
-        }),
-      });
-      let payload = await response.json();
-      props.dataFromChild(
-        `Employee #${payload.data.updateemployee.empid}, ${payload.data.updateemployee.first} ${payload.data.updateemployee.lastname} updated!`
-      );
-      setState({
-        managerid: null,
-        department: "",
-        empid: 0,
-        firstname: "",
-        lastname: "",
-        email: "",
-        dob: "",
-        editid: null,
-        show: false,
-        emanagerid: null,
-        edepartment: "",
-        eempid: null,
-        efirstname: "",
-        elastname: "",
-        eemail: "",
-        estartdate: "",
-        edob: "",
-      });
-      fetchEmployeeInfo();
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const deleteEmployee = async () => {
     try {
+      //get employee info
       let response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: `{getspecificemployee(empid:${state.editid}){managerid,department,empid,firstname,lastname,email,dob,startdate}}`,
+        }),
+      });
+      let payload = await response.json();
+      props.dataFromChild(`${payload.data.getspecificemployee.firstname}`);
+      console.log(payload.data.getspecificemployee.firstname);
+      let UserEmail = payload.data.getspecificemployee.email;
+
+      //delete their log in as well
+      response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: `mutation{removelogin(email:"${UserEmail}")} `,
+        }),
+      });
+      payload = await response.json();
+      props.dataFromChild(`${payload.data.removelogin}`);
+      console.log(payload.data.removelogin);
+
+      //delete employee from database
+      response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
           query: `{ deleteemployee (empid: ${state.editid}) }`,
         }),
       });
-      let payload = await response.json();
+      payload = await response.json();
       props.dataFromChild(`${payload.data.deleteemployee}`);
       console.log(payload.data.deleteemployee);
       setState({
@@ -253,158 +194,6 @@ const EmployeeInfo = (props) => {
     } catch (error) {
       console.log(error);
     }
-  };
-  //modal
-  const UpdateModal = (props) => {
-    if (!props.show) {
-      return null;
-    }
-
-    return (
-      <Modal
-        open={props.show}
-        onClose={props.onClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 1100,
-            height: 100,
-          }}
-        >
-          <TableContainer component={Paper}>
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              align="center"
-            >
-              Employee
-            </Typography>
-            <Table aria-label="member table">
-              <TableBody>
-                <TableRow key="headers1">
-                  <TableCell component="th" scope="row">
-                    Manager ID
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    Employee ID
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    Department
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    First Name
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    Last Name
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    Email
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    DOB
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    Start Date
-                  </TableCell>
-                </TableRow>
-                <TableRow key="headers2">
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      id="editmanagerid-field"
-                      onChange={oneditmangerid}
-                      value={state.emanagerid}
-                      fullWidth
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      id="editempid-field"
-                      value={state.eempid}
-                      fullWidth
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      id="editdepartment-field"
-                      onChange={oneditdepartment}
-                      value={state.edepartment}
-                      fullWidth
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      id="editfname-field"
-                      value={state.efirstname}
-                      fullWidth
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      id="editlname-field"
-                      onChange={oneditlname}
-                      value={state.elastname}
-                      fullWidth
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      id="email-field"
-                      onChange={oneditemail}
-                      value={state.eemail}
-                      fullWidth
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField id="dob-field" value={state.edob} fullWidth />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <TextField
-                      id="startdate-field"
-                      value={state.estartdate}
-                      fullWidth
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell />
-                  <TableCell />
-                  <TableCell />
-                  <TableCell component="th" scope="row">
-                    <Button
-                      onClick={updateEmployee}
-                      variant="outlined"
-                      style={{
-                        color: theme.palette.secondary.main,
-                      }}
-                      className="deleteButton"
-                    >
-                      Save
-                    </Button>
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <Button
-                      onClick={props.onClose}
-                      variant="outlined"
-                      style={{ color: "red" }}
-                      className="button"
-                    >
-                      Close
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Modal>
-    );
   };
 
   return (
@@ -614,6 +403,7 @@ const EmployeeInfo = (props) => {
             <UpdateModal
               onClose={() => setState({ show: false })}
               show={state.show}
+              empid={state.editid}
             />
           </div>
         </CardContent>

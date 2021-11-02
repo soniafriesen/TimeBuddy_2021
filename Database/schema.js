@@ -9,7 +9,8 @@ type Query {
  """ Employee query """
  getallemployees : [Employee]
  getallemployeesbymanager(managerid:Int): [Employee]
- getspecificemployee(empid:Int): Employee
+ getemployeebyID(empid:Int): Employee
+ getemployeebyemail(email:String): Employee
  deleteemployee(empid:Int): String
 
  """ Shift query """

@@ -9,7 +9,7 @@ import Login from "./components/login";
 import Signup from "./components/signup";
 import ScheduleMeeting from "./components/schedulemeeting";
 import Shifts from "./components/shifts";
-import EmployeeInfo from "./components/AddUpdateEmployee";
+import EmployeeInfo from "./components/ViewAddEmployee";
 import { getToken } from "./components/token";
 import {
   Toolbar,

@@ -12,9 +12,7 @@ import {
   TableCell,
   Paper,
   Button,
-  Typography,
-  Modal,
-  Box,
+  Typography,  
 } from "@material-ui/core";
 import UpdateModal from "./UpdateModal";
 const GRAPHURL = "http://localhost:5000/graphql";
@@ -97,6 +95,7 @@ const EmployeeInfo = (props) => {
 
   const msgfromchild = async () => {
     setState({ show: false });
+    props.addFromChild(`updated Employee ${state.editid}`);
     fetchEmployeeInfo();
   };
   const addEmployeeInfo = async () => {

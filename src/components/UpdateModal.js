@@ -1,9 +1,6 @@
 import React, { useReducer, useEffect } from "react";
-import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "../theme";
 import {
-  Card,
-  CardContent,
   TextField,
   Table,
   TableContainer,
@@ -61,7 +58,9 @@ const UpdateModal = (props) => {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` {getspecificemployee(empid:${parseInt(props.empid)}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
+          query: ` {getspecificemployee(empid:${parseInt(
+            props.empid
+          )}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
         }),
       });
       let payload = await response.json();
@@ -89,8 +88,7 @@ const UpdateModal = (props) => {
             { managerid, department, firstname, lastname, email, dob,startdate  }}`,
         }),
       });
-      let payload = await response.json();      
-      props.refresh(true);
+      let payload = await response.json();
       setState({
         managerid: null,
         department: "",
@@ -100,7 +98,8 @@ const UpdateModal = (props) => {
         email: "",
         dob: "",
         show: props.onClose,
-      });     
+      });
+      props.refresh(true);
     } catch (error) {
       console.log(error);
     }

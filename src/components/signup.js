@@ -14,31 +14,30 @@ export default function SignUp() {
           marginLeft: "10px",
           alignItems: "center",
           justifyContent: "center",
-          maxWidth: "400px"
+          maxWidth: "400px",
         }}
         align="center"
       >
         <div>
+          <TextField
+            fullWidth
+            label="First Name"
+            variant="standard"
+            margin="dense"
+            type="text"
+            size="small"
+            required
+          />
 
-<TextField
-  fullWidth
-  label="First Name"
-  variant="standard"
-  margin="dense"
-  type="text"
-  size="small"
-  required
-/>
-
-<TextField
-  fullWidth
-  label="Last Name"
-  variant="standard"
-  margin="dense"
-  type="text"
-  size="small"
-  required
-/>
+          <TextField
+            fullWidth
+            label="Last Name"
+            variant="standard"
+            margin="dense"
+            type="text"
+            size="small"
+            required
+          />
           <TextField
             fullWidth
             label="Email"
@@ -58,20 +57,19 @@ export default function SignUp() {
             size="small"
             required
           />
-
         </div>
 
-      <div>
-        <Button
-          style={{ marginTop: "20px" }}
-          type="submit"
-          variant="contained"
-          color="primary"
-        >
-          Signup
-        </Button>
-      </div>
-    </form>
+        <div>
+          <Button
+            style={{ marginTop: "20px" }}
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
+            Signup
+          </Button>
+        </div>
+      </form>
     </CardContent>
   );
 }

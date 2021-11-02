@@ -61,7 +61,7 @@ const UpdateModal = (props) => {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` {getspecificemployee(empid:${props.empid}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
+          query: ` {getspecificemployee(empid:${parseInt(props.empid)}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
         }),
       });
       let payload = await response.json();
@@ -89,10 +89,8 @@ const UpdateModal = (props) => {
             { managerid, department, firstname, lastname, email, dob,startdate  }}`,
         }),
       });
-      let payload = await response.json();
-      props.dataFromChild(
-        `Employee #${payload.data.updateemployee.empid}, ${payload.data.updateemployee.first} ${payload.data.updateemployee.lastname} updated!`
-      );
+      let payload = await response.json();      
+      props.refresh(true);
       setState({
         managerid: null,
         department: "",
@@ -101,8 +99,8 @@ const UpdateModal = (props) => {
         lastname: "",
         email: "",
         dob: "",
-        show: false,
-      });
+        show: props.onClose,
+      });     
     } catch (error) {
       console.log(error);
     }
@@ -235,7 +233,7 @@ const UpdateModal = (props) => {
                     style={{
                       color: theme.palette.secondary.main,
                     }}
-                    className="deleteButton"
+                    className="updateButton"
                   >
                     Save
                   </Button>

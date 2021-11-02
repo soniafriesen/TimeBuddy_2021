@@ -95,6 +95,10 @@ const EmployeeInfo = (props) => {
     }
   };
 
+  const msgfromchild = async () => {
+    setState({ show: false });
+    fetchEmployeeInfo();
+  };
   const addEmployeeInfo = async () => {
     try {
       let response = null;
@@ -404,6 +408,7 @@ const EmployeeInfo = (props) => {
               onClose={() => setState({ show: false })}
               show={state.show}
               empid={state.editid}
+              refresh={msgfromchild}
             />
           </div>
         </CardContent>

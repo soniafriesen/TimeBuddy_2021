@@ -173,13 +173,22 @@ const resolvers = {
       return `employee does not exist for manager ${args.managerid}`;
     else return employee;
   },
-  getspecificemployee: async (args) => {
+  getemployeebyID: async (args) => {
     let db = await dbRtns.getDBInstance();
     let employee = await dbRtns.findOne(db, employees, {
       empid: args.empid,
     });
     if (!employee)
-      return `employee does not exist in collection ${args.compname}`;
+      return `employee does not exist in collection`;
+    else return employee;
+  },
+  getemployeebyemail: async (args) => {
+    let db = await dbRtns.getDBInstance();
+    let employee = await dbRtns.findOne(db, employees, {
+      email: args.email,
+    });
+    if (!employee)
+      return `employee does not exist in collection`;
     else return employee;
   },
   addemployee: async (args) => {

@@ -27,14 +27,12 @@ const UpdateModal = (props) => {
     email: "",
     startdate: "",
     dob: "",
+    editid: null,
     show: props.show,
   };
   //modal variables
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [state, setState] = useReducer(reducer, initialState);
-  useEffect(() => {
-    findEmployee();
-  }, []);
 
   const manageridOnChange = (e) => {
     setState({ managerid: e.target.value });
@@ -51,16 +49,17 @@ const UpdateModal = (props) => {
   const emailOnChange = (e) => {
     setState({ email: e.target.value });
   };
-
+  const editOnchange = (e) => {
+    setState({ editid: e.target.value });
+  };
   const findEmployee = async () => {
     try {
+      let employee = parseInt(state.editid);
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` {getspecificemployee(empid:${parseInt(
-            props.empid
-          )}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
+          query: ` {getspecificemployee(empid:${employee}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
         }),
       });
       let payload = await response.json();
@@ -71,8 +70,8 @@ const UpdateModal = (props) => {
         firstname: payload.data.getspecificemployee.firstname,
         lastname: payload.data.getspecificemployee.lastname,
         email: payload.data.getspecificemployee.email,
-        startdate: payload.data.getspecificemployee.startdate,
         dob: payload.data.getspecificemployee.dob,
+        startdate: payload.data.getspecificemployee.startdate,
       });
     } catch (error) {
       console.log(error);
@@ -89,6 +88,7 @@ const UpdateModal = (props) => {
         }),
       });
       let payload = await response.json();
+      console.log(payload);
       setState({
         managerid: null,
         department: "",
@@ -137,6 +137,26 @@ const UpdateModal = (props) => {
           </Typography>
           <Table aria-label="member table">
             <TableBody>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="find-field"
+                    value={state.editid}
+                    onChange={editOnchange}
+                    fullWidth
+                  />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <Button
+                    onClick={findEmployee}
+                    variant="outlined"
+                    style={{ color: "blue" }}
+                    className="Findbutton"
+                  >
+                    Find
+                  </Button>
+                </TableCell>
+              </TableRow>
               <TableRow key="headers1">
                 <TableCell component="th" scope="row">
                   Manager ID

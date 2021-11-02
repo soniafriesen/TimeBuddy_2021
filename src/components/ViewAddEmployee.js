@@ -12,9 +12,9 @@ import {
   TableCell,
   Paper,
   Button,
-  Typography,  
+  Typography,
 } from "@material-ui/core";
-import UpdateModal from "./UpdateModal";
+import UpdateModal from "./UpdateModal"; //update modal
 const GRAPHURL = "http://localhost:5000/graphql";
 const EmployeeInfo = (props) => {
   //employee fields, same as the db schema
@@ -30,6 +30,7 @@ const EmployeeInfo = (props) => {
     dob: "",
     show: false,
     editid: null,
+    payload: null,
   };
   //modal variables
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -95,7 +96,7 @@ const EmployeeInfo = (props) => {
 
   const msgfromchild = async () => {
     setState({ show: false });
-    props.addFromChild(`updated Employee ${state.editid}`);
+    props.dataFromChild(`updated Employee ${state.editid}`);
     fetchEmployeeInfo();
   };
   const addEmployeeInfo = async () => {
@@ -198,7 +199,9 @@ const EmployeeInfo = (props) => {
       console.log(error);
     }
   };
-
+  const initialize = async () => {
+    setShow(true);
+  };
   return (
     <MuiThemeProvider theme={theme}>
       <Card>
@@ -324,60 +327,64 @@ const EmployeeInfo = (props) => {
             Current Employees
           </Typography>
           <div align="center">
-            <TableRow key="headers1">
-              <TableCell component="th" scope="row">
-                ManagerId
-              </TableCell>
-              <TableCell component="th" scope="row">
-                EmployeeId
-              </TableCell>
-              <TableCell component="th" scope="row">
-                Department
-              </TableCell>
-              <TableCell component="th" scope="row">
-                First Name
-              </TableCell>
-              <TableCell component="th" scope="row">
-                Last Name
-              </TableCell>
-              <TableCell component="th" scope="row">
-                Email
-              </TableCell>
-              <TableCell component="th" scope="row">
-                DOB
-              </TableCell>
-              <TableCell component="th" scope="row">
-                Start date
-              </TableCell>
-            </TableRow>
-            {state.resArr.map((row) => (
-              <TableRow key={state.resArr.indexOf(row)}>
-                <TableCell component="th" scope="row">
-                  {row.managerid}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.empid}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.department}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.firstname}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.lastname}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.email}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.dob}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.startdate}
-                </TableCell>
-              </TableRow>
-            ))}
+            <Table>
+              <TableBody>
+                <TableRow key="headers1">
+                  <TableCell component="th" scope="row">
+                    ManagerId
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    EmployeeId
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Department
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    First Name
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Last Name
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Email
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    DOB
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Start date
+                  </TableCell>
+                </TableRow>
+                {state.resArr.map((row) => (
+                  <TableRow key={state.resArr.indexOf(row)}>
+                    <TableCell component="th" scope="row">
+                      {row.managerid}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.empid}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.department}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.firstname}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.lastname}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.email}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.dob}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.startdate}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
           <div className="EmployeeInfo" align="center">
             <div style={{ width: "100%" }}>
@@ -385,14 +392,10 @@ const EmployeeInfo = (props) => {
                 id="edit-field"
                 onChange={onidchange}
                 value={state.editid}
-                label="Enter employee id (xxxx)"
+                label="Enter id for delete (xxxx)"
               />
             </div>
-            <Button
-              color="secondary"
-              variant="outlined"
-              onClick={() => setShow({ show: true })}
-            >
+            <Button color="secondary" variant="outlined" onClick={initialize}>
               EDIT
             </Button>
             <Button
@@ -406,7 +409,6 @@ const EmployeeInfo = (props) => {
             <UpdateModal
               onClose={() => setState({ show: false })}
               show={state.show}
-              empid={state.editid}
               refresh={msgfromchild}
             />
           </div>

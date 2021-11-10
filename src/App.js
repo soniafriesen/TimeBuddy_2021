@@ -48,7 +48,7 @@ const App = () => {
   const logout = () => {
     console.log("logout");
     sessionStorage.removeItem("token");
-    window.location.reload(false);
+    window.location.reload(true);
   };
 
   return (
@@ -60,7 +60,7 @@ const App = () => {
           </Typography>
           {getToken() ? (
             <div style={{ marginLeft: "30%" }}>
-              USER NAME HERE
+              {sessionStorage.getItem("token")}
               <Button
                 style={{
                   backgroundColor: "transparent",

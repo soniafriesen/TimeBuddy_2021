@@ -1,6 +1,7 @@
 export const getToken = () => {
-  const tokenString = sessionStorage.getItem('token');
-  const userToken = JSON.parse(tokenString);
+  const tokenString = sessionStorage.getItem("token");
+  const userToken = tokenString;
   console.log("getToken called - userToken : " + userToken);
-  return userToken?.token;
-  }
+  if (userToken == null) return false;
+  else return true;
+};

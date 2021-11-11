@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 import { TextField, Button, Typography, CardContent } from "@material-ui/core";
 import { getToken } from "./token";
+import { ForgetPassword } from "./ForgetPassword";
 const GRAPHURL = "http://localhost:5000/graphql";
 
 const LoginPage = () => {
@@ -9,6 +10,7 @@ const LoginPage = () => {
     password: "",
     valid: false,
     message: "",
+    show: false,
   };
   //modal variables
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -20,17 +22,7 @@ const LoginPage = () => {
   const passwordOnChange = (e) => {
     setState({ password: e.target.value });
   };
-  const login = () => {
-    if (state.email && state.password) {
-      console.log("logging in");
-      findLogin();
-      if (state.valid) {
-        sessionStorage.setItem("token", state.email);
-        getToken();
-      } else setState({ message: "Invalid login, check email or password!" });
-    }
-  };
-  const findLogin = async () => {
+  const Login = async () => {
     try {
       let response = await fetch(GRAPHURL, {
         method: "POST",
@@ -46,7 +38,12 @@ const LoginPage = () => {
         ) {
           setState({ valid: false });
           setState({ message: "Invalid login, check email or password!" });
-        } else setState({ valid: true });
+        } else {
+          setState({ valid: true });
+          console.log("Loggin in...");
+          sessionStorage.setItem("token", state.email);
+          getToken();
+        }
       } else if (state.email !== payload.data.showspecificemployeelogin.email) {
         setState({ valid: false });
         setState({ message: "Invalid login, check email or password!" });
@@ -54,6 +51,9 @@ const LoginPage = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+  const initialize = async () => {
+    setState({ show: true });
   };
 
   return (
@@ -100,7 +100,7 @@ const LoginPage = () => {
 
           <div>
             <Button
-              onClick={login}
+              onClick={Login}
               style={{ marginTop: "20px" }}
               variant="contained"
               color="primary"
@@ -109,6 +109,21 @@ const LoginPage = () => {
               LOGIN
             </Button>
           </div>
+          <div>
+            <Button
+              onClick={initialize}
+              style={{ marginTop: "20px" }}
+              variant="outlined"
+              color="secondary"
+            >
+              Forgot Password
+            </Button>
+          </div>
+          <br />
+          <ForgetPassword
+            onClose={() => setState({ show: false })}
+            show={state.show}
+          />
         </form>
       ) : (
         <Typography color="secondary">Logged in</Typography>

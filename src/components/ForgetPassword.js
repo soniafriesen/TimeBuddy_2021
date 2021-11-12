@@ -51,6 +51,7 @@ export const ForgetPassword = (props) => {
         password: "",
         show: props.onClose,
       });
+      props.refresh(true);
     } catch (error) {
       console.log(error);
     }
@@ -83,10 +84,7 @@ export const ForgetPassword = (props) => {
             component="h1"
             align="center"
             color="primary"
-          >
-            <div align="center">
-              {!state.showMessage ? "Reset Password" : state.msg}
-            </div>
+          >           
           </Typography>
           <Table aria-label="member table">
             <TableBody>

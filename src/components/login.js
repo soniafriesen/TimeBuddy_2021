@@ -4,7 +4,7 @@ import { getToken } from "./token";
 import { ForgetPassword } from "./ForgetPassword";
 const GRAPHURL = "http://localhost:5000/graphql";
 
-const LoginPage = () => {
+const LoginPage = (props) => {
   const initialState = {
     email: "",
     password: "",
@@ -55,7 +55,10 @@ const LoginPage = () => {
   const initialize = async () => {
     setState({ show: true });
   };
-
+  const msgfromchild = async () => {
+    setState({ show: false });
+    props.dataFromChild(`Password Reset!`);    
+  };
   return (
     <CardContent>
       <Typography variant="h4" color="primary">
@@ -123,6 +126,7 @@ const LoginPage = () => {
           <ForgetPassword
             onClose={() => setState({ show: false })}
             show={state.show}
+            refresh = {msgfromchild}
           />
         </form>
       ) : (

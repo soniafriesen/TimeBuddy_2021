@@ -200,6 +200,7 @@ const EmployeeInfo = (props) => {
     }
   };
   const initialize = async () => {
+    setState({ status: "update" });
     setShow(true);
   };
   return (

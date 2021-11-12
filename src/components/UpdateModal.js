@@ -27,7 +27,7 @@ const UpdateModal = (props) => {
     email: "",
     startdate: "",
     dob: "",
-    editid: null,
+    editid: null,    
     show: props.show,
   };
   //modal variables

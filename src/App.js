@@ -131,7 +131,7 @@ const App = () => {
       <div>
         <Route exact path="/" render={() => <Redirect to="/home" />} />
         <Route path="/home" component={Home} />
-        <Route path="/login" component={Login} />
+        <Route path="/login" render={() => <Login dataFromChild={msgFromChild} />}/>
         <Route path="/signup" component={Signup} />
         <Route path="/schedulemeeting" component={ScheduleMeeting} />
         <Route path="/shifts" component={Shifts} />

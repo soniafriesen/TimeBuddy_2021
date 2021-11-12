@@ -6,7 +6,6 @@ import { Button } from "@material-ui/core";
 import theme from "./theme";
 import Home from "./components/home";
 import Login from "./components/login";
-import Signup from "./components/signup";
 import ScheduleMeeting from "./components/schedulemeeting";
 import Shifts from "./components/shifts";
 import EmployeeInfo from "./components/ViewAddEmployee";
@@ -131,8 +130,7 @@ const App = () => {
       <div>
         <Route exact path="/" render={() => <Redirect to="/home" />} />
         <Route path="/home" component={Home} />
-        <Route path="/login" render={() => <Login dataFromChild={msgFromChild} />}/>
-        <Route path="/signup" component={Signup} />
+        <Route path="/login" render={() => <Login dataFromChild={msgFromChild} />}/>       
         <Route path="/schedulemeeting" component={ScheduleMeeting} />
         <Route path="/shifts" component={Shifts} />
         <Route

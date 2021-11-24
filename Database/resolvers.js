@@ -178,8 +178,7 @@ const resolvers = {
     let employee = await dbRtns.findOne(db, employees, {
       empid: args.empid,
     });
-    if (!employee)
-      return `employee does not exist in collection`;
+    if (!employee) return `employee does not exist in collection`;
     else return employee;
   },
   getemployeebyemail: async (args) => {
@@ -187,8 +186,7 @@ const resolvers = {
     let employee = await dbRtns.findOne(db, employees, {
       email: args.email,
     });
-    if (!employee)
-      return `employee does not exist in collection`;
+    if (!employee) return `employee does not exist in collection`;
     else return employee;
   },
   addemployee: async (args) => {
@@ -621,8 +619,9 @@ const resolvers = {
   /**************************************************************************************/
   addtimeoff: async (args) => {
     let db = await dbRtns.getDBInstance();
-    let timeoff = await dbRtns.findAll(db, timesoff);
-    let id = timeoff.length + 1;
+    var usaTime = new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
     usaTime = new Date(usaTime);
     var timeStr = new Date() + 3600000 * -5.0;
     var timeArr = timeStr.split(" ");
@@ -633,11 +632,27 @@ const resolvers = {
       "-" +
       timeArr[2];
     let startdate = timeinput;
-    let approved = false;
-    let newtimeoff = `{"toid": ${id},"empid":${args.empid}, "startdate": "${args.startdate}", "enddate": "${args.enddate}", "description": "${args.description}", "requestdate":"${startdate}", "approved": "${approved}"}`;
+    let approved = "No";
+
+    let min = Math.ceil(1001);
+    let max = Math.floor(9999);
+    let random = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    let timeoff = await dbRtns.findAll(db, timesoff, {});
+    if (timeoff) {
+      let doesExist = true;
+      while (doesExist) {
+        let yes2 = timeoff.includes(random);
+        if ((doesExist = yes2)) {
+          random = Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+      }
+    }
+    //make sure all codes are unique
+    let newtimeoff = `{"toid": ${random},"empid":${args.empid}, "startdate": "${args.startdate}", "enddate": "${args.enddate}", "description": "${args.description}", "requestdate":"${startdate}", "approved": "${approved}"}`;
     newtimeoff = JSON.parse(newtimeoff);
     let found = await dbRtns.findOne(db, timesoff, {
-      toid: id,
+      toid: random,
       empid: args.empid,
     });
     if (!found) {
@@ -678,7 +693,7 @@ const resolvers = {
       timesoff,
       { _id: timeoff._id },
       {
-        approved: `${true}`,
+        approved: "Yes",
       }
     );
     timeoff = await dbRtns.findOne(db, timesoff, {
@@ -802,7 +817,7 @@ const resolvers = {
     let login = await dbRtns.findOne(db, logins, {
       email: args.email,
     });
-    if (!signin) return `login does not exist`;
+    if (!login) return `login does not exist`;
     let updateResults = await dbRtns.updateOne(
       db,
       logins,

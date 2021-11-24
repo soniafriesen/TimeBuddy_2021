@@ -1,7 +1,7 @@
 export const getToken = () => {
   const tokenString = sessionStorage.getItem("token");
   const userToken = tokenString;
-  console.log("getToken called - userToken : " + userToken);
+  //console.log("getToken called - userToken : " + userToken);
   if (userToken == null) return false;
-  else return true;
+  else return tokenString;
 };

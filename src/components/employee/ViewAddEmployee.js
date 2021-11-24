@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect } from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import theme from "../theme";
+import theme from "../../theme";
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import {
   Button,
   Typography,
 } from "@material-ui/core";
-import UpdateModal from "./UpdateModal"; //update modal
+import UpdateModal from "./UpdateEmployeeModal"; //update modal
 const GRAPHURL = "http://localhost:5000/graphql";
 const EmployeeInfo = (props) => {
   //employee fields, same as the db schema
@@ -22,15 +22,15 @@ const EmployeeInfo = (props) => {
     resArr: [],
     managerid: null,
     department: "",
-    empid: null,
+    empid: 0,
     firstname: "",
     lastname: "",
     email: "",
     startdate: "",
     dob: "",
     show: false,
-    editid: null,
-    payload: null,
+    editid: 0,
+    payload: "",
   };
   //modal variables
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -139,7 +139,7 @@ const EmployeeInfo = (props) => {
         lastname: "",
         email: "",
         dob: "",
-        editid: null,
+        editid: 0,
       });
       fetchEmployeeInfo();
     } catch (error) {
@@ -153,13 +153,13 @@ const EmployeeInfo = (props) => {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: `{getspecificemployee(empid:${state.editid}){managerid,department,empid,firstname,lastname,email,dob,startdate}}`,
+          query: `{getemployeebyID(empid:${state.editid}){managerid,department,empid,firstname,lastname,email,dob,startdate}}`,
         }),
       });
       let payload = await response.json();
-      props.dataFromChild(`${payload.data.getspecificemployee.firstname}`);
-      console.log(payload.data.getspecificemployee.firstname);
-      let UserEmail = payload.data.getspecificemployee.email;
+      props.dataFromChild(`${payload.data.getemployeebyID.firstname}`);
+      console.log(payload.data.getemployeebyID.firstname);
+      let UserEmail = payload.data.getemployeebyID.email;
 
       //delete their log in as well
       response = await fetch(GRAPHURL, {
@@ -192,7 +192,7 @@ const EmployeeInfo = (props) => {
         lastname: "",
         email: "",
         dob: "",
-        editid: null,
+        editid: 0,
       });
       fetchEmployeeInfo();
     } catch (error) {

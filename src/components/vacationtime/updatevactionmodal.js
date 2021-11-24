@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer } from "react";
 import theme from "../../theme";
 import {
   TextField,
@@ -15,88 +15,74 @@ import {
 } from "@material-ui/core";
 const GRAPHURL = "http://localhost:5000/graphql";
 //modal
-const UpdateModal = (props) => {
+const UpdateVacationModal = (props) => {
   //employee fields, same as the db schema
   const initialState = {
     resArr: [],
-    managerid: null,
-    department: "",
-    empid: null,
-    firstname: "",
-    lastname: "",
-    email: "",
+    toid: null,
+    empid: 0,
     startdate: "",
-    dob: "",
-    editid: null,    
+    enddate: "",
+    description: "",
+    requestdate: "",
+    approved: "",
+    edittoid: 0,
     show: props.show,
   };
   //modal variables
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [state, setState] = useReducer(reducer, initialState);
 
-  const manageridOnChange = (e) => {
-    setState({ managerid: e.target.value });
+  const toidOnChange = (e) => {
+    setState({ edittoid: e.target.value });
   };
-
-  const departmentOnChange = (e) => {
-    setState({ department: e.target.value });
+  const approveOnChange = (e) => {
+    setState({ approved: e.target.value });
   };
-
-  const lastnameOnChange = (e) => {
-    setState({ lastname: e.target.value });
-  };
-
-  const emailOnChange = (e) => {
-    setState({ email: e.target.value });
-  };
-  const editOnchange = (e) => {
-    setState({ editid: e.target.value });
-  };
-  const findEmployee = async () => {
+  const findTimeOff = async () => {
     try {
-      let employee = parseInt(state.editid);
+      let timeoff = parseInt(state.edittoid);
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` {getspecificemployee(empid:${employee}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
+          query: ` {showspecifictimeoff(toid:${timeoff}){toid,empid,startdate,enddate,description,approved,requestdate}}`,
         }),
       });
       let payload = await response.json();
       setState({
-        managerid: payload.data.getspecificemployee.managerid,
-        department: payload.data.getspecificemployee.department,
-        empid: payload.data.getspecificemployee.empid,
-        firstname: payload.data.getspecificemployee.firstname,
-        lastname: payload.data.getspecificemployee.lastname,
-        email: payload.data.getspecificemployee.email,
-        dob: payload.data.getspecificemployee.dob,
-        startdate: payload.data.getspecificemployee.startdate,
+        toid: payload.data.showspecifictimeoff.toid,
+        empid: payload.data.showspecifictimeoff.empid,
+        startdate: payload.data.showspecifictimeoff.startdate,
+        enddate: payload.data.showspecifictimeoff.enddate,
+        description: payload.data.showspecifictimeoff.description,
+        requestdate: payload.data.showspecifictimeoff.requestdate,
+        approved: payload.data.showspecifictimeoff.approved,
       });
     } catch (error) {
       console.log(error);
     }
   };
-  const updateEmployee = async () => {
+  const approveTimeOff = async () => {
     try {
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` mutation { updateemployee (managerid: ${state.managerid}, empid: ${state.empid}, department: "${state.department}", lastname:"${state.lastname}", email: "${state.email}")
-            { managerid, department, firstname, lastname, email, dob,startdate  }}`,
+          query: ` mutation{updateapproval(toid:${state.edittoid}){toid,empid,startdate,enddate,description,approved,requestdate}}`,
         }),
       });
       let payload = await response.json();
       console.log(payload);
       setState({
-        managerid: null,
-        department: "",
+        toid: null,
         empid: 0,
-        firstname: "",
-        lastname: "",
-        email: "",
-        dob: "",
+        startdate: "",
+        enddate: "",
+        description: "",
+        requestdate: "",
+        approved: "",
+        edittoid: null,
         show: props.onClose,
       });
       props.refresh(true);
@@ -133,7 +119,7 @@ const UpdateModal = (props) => {
             component="h2"
             align="center"
           >
-            Employee
+            Vacation Time
           </Typography>
           <Table aria-label="member table">
             <TableBody>
@@ -141,14 +127,14 @@ const UpdateModal = (props) => {
                 <TableCell component="th" scope="row">
                   <TextField
                     id="find-field"
-                    value={state.editid}
-                    onChange={editOnchange}
+                    value={state.edittoid}
+                    onChange={toidOnChange}
                     fullWidth
                   />
                 </TableCell>
                 <TableCell component="th" scope="row">
                   <Button
-                    onClick={findEmployee}
+                    onClick={findTimeOff}
                     variant="outlined"
                     style={{ color: "blue" }}
                     className="Findbutton"
@@ -159,79 +145,27 @@ const UpdateModal = (props) => {
               </TableRow>
               <TableRow key="headers1">
                 <TableCell component="th" scope="row">
-                  Manager ID
-                </TableCell>
-                <TableCell component="th" scope="row">
                   Employee ID
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  Department
+                  Start Time
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  First Name
+                  End Time
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  Last Name
+                  Description
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  Email
+                  Request Date
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  DOB
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  Start Date
+                  Approval
                 </TableCell>
               </TableRow>
               <TableRow key="headers2">
                 <TableCell component="th" scope="row">
-                  <TextField
-                    id="editmanagerid-field"
-                    onChange={manageridOnChange}
-                    value={state.managerid}
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <TextField
-                    id="editempid-field"
-                    value={state.empid}
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <TextField
-                    id="editdepartment-field"
-                    onChange={departmentOnChange}
-                    value={state.department}
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <TextField
-                    id="editfname-field"
-                    value={state.firstname}
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <TextField
-                    id="editlname-field"
-                    onChange={lastnameOnChange}
-                    value={state.lastname}
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <TextField
-                    id="email-field"
-                    onChange={emailOnChange}
-                    value={state.email}
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <TextField id="dob-field" value={state.dob} fullWidth />
+                  <TextField id="empid-field" value={state.empid} fullWidth />
                 </TableCell>
                 <TableCell component="th" scope="row">
                   <TextField
@@ -240,6 +174,35 @@ const UpdateModal = (props) => {
                     fullWidth
                   />
                 </TableCell>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="enddate-field"
+                    value={state.enddate}
+                    fullWidth
+                  />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="description-field"
+                    value={state.description}
+                    fullWidth
+                  />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="requestdate-field"
+                    value={state.requestdate}
+                    fullWidth
+                  />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="approval-field"
+                    onChange={approveOnChange}
+                    value={state.approved}
+                    fullWidth
+                  />
+                </TableCell>                
               </TableRow>
               <TableRow>
                 <TableCell />
@@ -247,7 +210,7 @@ const UpdateModal = (props) => {
                 <TableCell />
                 <TableCell component="th" scope="row">
                   <Button
-                    onClick={updateEmployee}
+                    onClick={approveTimeOff}
                     variant="outlined"
                     style={{
                       color: theme.palette.secondary.main,
@@ -275,4 +238,4 @@ const UpdateModal = (props) => {
     </Modal>
   );
 };
-export default UpdateModal;
+export default UpdateVacationModal;

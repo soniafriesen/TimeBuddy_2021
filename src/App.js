@@ -9,6 +9,7 @@ import Login from "./components/login/login";
 import ScheduleMeeting from "./components/schedulemeeting";
 import Shifts from "./components/shifts";
 import EmployeeInfo from "./components/employee/ViewAddEmployee";
+import TimeOffInfo from "./components/vacationtime/viewaddvaction";
 import { getToken } from "./components/token";
 import {
   Toolbar,
@@ -122,6 +123,13 @@ const App = () => {
                 <MenuItem component={Link} to="/shifts" onClick={handleClose}>
                   Shifts
                 </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/vacations"
+                  onClick={handleClose}
+                >
+                  Time Off
+                </MenuItem>
               </div>
             ) : null}
           </Menu>
@@ -136,6 +144,10 @@ const App = () => {
         <Route
           path="/employees"
           render={() => <EmployeeInfo dataFromChild={msgFromChild} />}
+        />
+        <Route
+          path="/vacations"
+          render={() => <TimeOffInfo dataFromChild={msgFromChild} />}
         />
       </div>
       <Snackbar

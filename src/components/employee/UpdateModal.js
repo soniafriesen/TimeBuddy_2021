@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from "react";
-import theme from "../theme";
+import theme from "../../theme";
 import {
   TextField,
   Table,

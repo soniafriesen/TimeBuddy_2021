@@ -5,10 +5,10 @@ import { MuiThemeProvider } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import theme from "./theme";
 import Home from "./components/home";
-import Login from "./components/login";
+import Login from "./components/login/login";
 import ScheduleMeeting from "./components/schedulemeeting";
 import Shifts from "./components/shifts";
-import EmployeeInfo from "./components/ViewAddEmployee";
+import EmployeeInfo from "./components/employee/ViewAddEmployee";
 import { getToken } from "./components/token";
 import {
   Toolbar,

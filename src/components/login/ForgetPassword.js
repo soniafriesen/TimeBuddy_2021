@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import theme from "../theme";
+import theme from "../../theme";
 import {
   TextField,
   Table,

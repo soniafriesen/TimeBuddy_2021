@@ -1,6 +1,6 @@
 import React, { useReducer } from "react";
 import { TextField, Button, Typography, CardContent } from "@material-ui/core";
-import { getToken } from "./token";
+import { getToken } from "../token";
 import { ForgetPassword } from "./ForgetPassword";
 const GRAPHURL = "http://localhost:5000/graphql";
 

@@ -107,3 +107,4 @@ mutation{addlogin(email:"s_friesen@fanshaweonline.ca",password:"random1234"){ema
 {showspecificemployeelogin(email:"s_friesen@fanshaweonline.ca")
   {email,password,datecreated}}
 mutation{removelogin(email:"s_friesen@fanshaweonline.ca")}
+mutation{changepassword(email:"s_friesen@fanshaweonline.ca", password:"random"){email,password,datecreated}}

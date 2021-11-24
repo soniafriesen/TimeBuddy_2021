@@ -566,9 +566,7 @@ const resolvers = {
   /*                               Payroll Functions                                    */
   /**************************************************************************************/
   addpayroll: async (args) => {
-    let db = await dbRtns.getDBInstance();
-    let payroll = await dbRtns.findAll(db, payrolls);
-    let id = payroll.length + 1;
+    let db = await dbRtns.getDBInstance();   
     let payamount = args.totalhrs * args.payrate;
     usaTime = new Date(usaTime);
     var timeStr = new Date() + 3600000 * -5.0;
@@ -580,10 +578,25 @@ const resolvers = {
       "-" +
       timeArr[2];
     let startdate = timeinput;
-    let newpayroll = `{"prid": ${id},"empid":${args.empid}, "payrate": ${args.payrate}, "paycycle": "${args.paycycle}", "totalhrs": ${args.totalhrs}, "amount": ${payamount},"date":"${startdate}"}`;
+    let min = Math.ceil(1001);
+    let max = Math.floor(9999);
+    let random = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    let payroll = await dbRtns.findAll(db, timesoff, {});
+    if (payroll) {
+      let doesExist = true;
+      while (doesExist) {
+        let yes2 = timepayrolloff.includes(random);
+        if ((doesExist = yes2)) {
+          random = Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+      }
+    }
+
+    let newpayroll = `{"prid": ${random},"empid":${args.empid}, "payrate": ${args.payrate}, "paycycle": "${args.paycycle}", "totalhrs": ${args.totalhrs}, "amount": ${payamount},"date":"${startdate}"}`;
     newpayroll = JSON.parse(newpayroll);
     let found = await dbRtns.findOne(db, payrolls, {
-      prid: id,
+      prid: random,
       empid: args.empid,
     });
     if (!found) {

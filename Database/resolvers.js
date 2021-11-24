@@ -732,9 +732,7 @@ const resolvers = {
   /*                             Emergencies Functions                                  */
   /**************************************************************************************/
   addemergency: async (args) => {
-    let db = await dbRtns.getDBInstance();
-    let emergency = await dbRtns.findAll(db, emergencies);
-    let id = emergency.length + 1;
+    let db = await dbRtns.getDBInstance();   
     var usaTime = new Date().toLocaleString("en-US", {
       timeZone: "America/New_York",
     });
@@ -748,10 +746,23 @@ const resolvers = {
       "-" +
       timeArr[2];
     let startdate = timeinput;
-    let newemergency = `{"emergid": ${id},"empid":${args.empid},"date":"${startdate}",  "description": "${args.description}"}`;
+    let min = Math.ceil(1001);
+    let max = Math.floor(9999);
+    let random = Math.floor(Math.random() * (max - min + 1)) + min;
+    let emergency = await dbRtns.findAll(db, timesoff, {});
+    if (emergency) {
+      let doesExist = true;
+      while (doesExist) {
+        let yes2 = emergency.includes(random);
+        if ((doesExist = yes2)) {
+          random = Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+      }
+    }
+    let newemergency = `{"emergid": ${random},"empid":${args.empid},"date":"${startdate}",  "description": "${args.description}"}`;
     newemergency = JSON.parse(newemergency);
     let found = await dbRtns.findOne(db, emergencies, {
-      emergid: id,
+      emergid: random,
       empid: args.empid,
     });
     if (!found) {

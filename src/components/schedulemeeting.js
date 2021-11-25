@@ -299,7 +299,7 @@ const initialize = async () => {
             <br />
             message: {state.message}*/}
 
-        <Typography variant="h5" align="center" style={{marginTop:'20px'}}>
+        <Typography color="primary" variant="h5" align="center" style={{marginTop:'20px'}}>
             Current Meetings
           </Typography>
           <div align="center">

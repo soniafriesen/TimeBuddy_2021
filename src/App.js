@@ -115,10 +115,10 @@ const App = () => {
                 </MenuItem>
                 <MenuItem
                   component={Link}
-                  to="/schedulemeeting"
+                  to="/meetings"
                   onClick={handleClose}
                 >
-                  Schedule Meetings
+                  Meetings
                 </MenuItem>
                 <MenuItem component={Link} to="/shifts" onClick={handleClose}>
                   Shifts
@@ -139,7 +139,7 @@ const App = () => {
         <Route exact path="/" render={() => <Redirect to="/home" />} />
         <Route path="/home" component={Home} />
         <Route path="/login" render={() => <Login dataFromChild={msgFromChild} />}/>       
-        <Route path="/schedulemeeting" component={ScheduleMeeting} />
+        <Route path="/meetings" component={ScheduleMeeting} />
         <Route path="/shifts" component={Shifts} />
         <Route
           path="/employees"

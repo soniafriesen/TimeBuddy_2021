@@ -40,7 +40,7 @@ const LoginPage = (props) => {
           setState({ message: "Invalid login, check email or password!" });
         } else {
           setState({ valid: true });
-          console.log("Loggin in...");
+          console.log("Logging in...");
           sessionStorage.setItem("token", state.email);
           getToken();
         }

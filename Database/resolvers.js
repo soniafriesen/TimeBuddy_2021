@@ -468,8 +468,8 @@ const resolvers = {
   /**************************************************************************************/
   postameeting: async (args) => {
     let db = await dbRtns.getDBInstance();
-    let min = Math.ceil(1);
-    let max = Math.floor(9999999);
+    let min = Math.ceil(1001);
+    let max = Math.floor(9999);
     let random = Math.floor(Math.random() * (max - min + 1)) + min;
     let meeting = await dbRtns.findAll(db, meetings, {
       compname: `${args.compname}`,
@@ -566,7 +566,7 @@ const resolvers = {
   /*                               Payroll Functions                                    */
   /**************************************************************************************/
   addpayroll: async (args) => {
-    let db = await dbRtns.getDBInstance();   
+    let db = await dbRtns.getDBInstance();
     let payamount = args.totalhrs * args.payrate;
     usaTime = new Date(usaTime);
     var timeStr = new Date() + 3600000 * -5.0;
@@ -732,7 +732,7 @@ const resolvers = {
   /*                             Emergencies Functions                                  */
   /**************************************************************************************/
   addemergency: async (args) => {
-    let db = await dbRtns.getDBInstance();   
+    let db = await dbRtns.getDBInstance();
     var usaTime = new Date().toLocaleString("en-US", {
       timeZone: "America/New_York",
     });

@@ -97,10 +97,7 @@ const App = () => {
               <div>
                 <MenuItem component={Link} to="/login" onClick={handleClose}>
                   Login
-                </MenuItem>
-                <MenuItem component={Link} to="/signup" onClick={handleClose}>
-                  Signup
-                </MenuItem>
+                </MenuItem>                
               </div>
             ) : null}
 

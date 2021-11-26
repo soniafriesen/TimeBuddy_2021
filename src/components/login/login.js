@@ -1,7 +1,9 @@
 import React, { useReducer } from "react";
-import { TextField, Button, Typography, CardContent } from "@material-ui/core";
+import { TextField, Button, Typography, CardContent,Card } from "@material-ui/core";
 import { getToken } from "../token";
 import { ForgetPassword } from "./ForgetPassword";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import theme from "../../theme";
 const GRAPHURL = "http://localhost:5000/graphql";
 
 const LoginPage = (props) => {
@@ -57,82 +59,86 @@ const LoginPage = (props) => {
   };
   const msgfromchild = async () => {
     setState({ show: false });
-    props.dataFromChild(`Password Reset!`);    
+    props.dataFromChild(`Password Reset!`);
   };
   return (
-    <CardContent>
-      <Typography variant="h4" color="primary">
-        Login
-      </Typography>
+    <MuiThemeProvider theme={theme}>
+      <Card>
+        <CardContent align="center">
+          <Typography variant="h4" color="primary">
+            Login
+          </Typography>
 
-      {!getToken() ? (
-        <form
-          style={{
-            width: "85%",
-            marginLeft: "10px",
-            alignItems: "center",
-            justifyContent: "center",
-            maxWidth: "400px",
-          }}
-          align="center"
-        >
-          <div>{state.valid ? "" : state.message}</div>
-          <div>
-            <TextField
-              fullWidth
-              label="Email"
-              variant="standard"
-              margin="dense"
-              type="email"
-              size="small"
-              required
-              onChange={emailOnChange}
-            />
-
-            <TextField
-              fullWidth
-              label="Password"
-              variant="standard"
-              margin="dense"
-              type="password"
-              size="small"
-              required
-              onChange={passwordOnChange}
-            />
-          </div>
-
-          <div>
-            <Button
-              onClick={Login}
-              style={{ marginTop: "20px" }}
-              variant="contained"
-              color="primary"
-              disabled={!state.email || !state.password}
+          {!getToken() ? (
+            <form
+              style={{
+                width: "85%",
+                marginLeft: "10px",
+                alignItems: "center",
+                justifyContent: "center",
+                maxWidth: "400px",
+              }}
+              align="center"
             >
-              LOGIN
-            </Button>
-          </div>
-          <div>
-            <Button
-              onClick={initialize}
-              style={{ marginTop: "20px" }}
-              variant="outlined"
-              color="secondary"
-            >
-              Forgot Password
-            </Button>
-          </div>
-          <br />
-          <ForgetPassword
-            onClose={() => setState({ show: false })}
-            show={state.show}
-            refresh = {msgfromchild}
-          />
-        </form>
-      ) : (
-        <Typography color="secondary">Logged in</Typography>
-      )}
-    </CardContent>
+              <div>{state.valid ? "" : state.message}</div>
+              <div>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  variant="standard"
+                  margin="dense"
+                  type="email"
+                  size="small"
+                  required
+                  onChange={emailOnChange}
+                />
+
+                <TextField
+                  fullWidth
+                  label="Password"
+                  variant="standard"
+                  margin="dense"
+                  type="password"
+                  size="small"
+                  required
+                  onChange={passwordOnChange}
+                />
+              </div>
+
+              <div>
+                <Button
+                  onClick={Login}
+                  style={{ marginTop: "20px" }}
+                  variant="contained"
+                  color="primary"
+                  disabled={!state.email || !state.password}
+                >
+                  LOGIN
+                </Button>
+              </div>
+              <div>
+                <Button
+                  onClick={initialize}
+                  style={{ marginTop: "20px" }}
+                  variant="outlined"
+                  color="secondary"
+                >
+                  Forgot Password
+                </Button>
+              </div>
+              <br />
+              <ForgetPassword
+                onClose={() => setState({ show: false })}
+                show={state.show}
+                refresh={msgfromchild}
+              />
+            </form>
+          ) : (
+            <Typography color="secondary">Logged in</Typography>
+          )}
+        </CardContent>
+      </Card>
+    </MuiThemeProvider>
   );
 };
 export default LoginPage;

@@ -15,7 +15,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import UpdateModal from "./updatevactionmodal"; //update modal
+import { getToken } from "../token";
 const GRAPHURL = "http://localhost:5000/graphql";
+
 const VacationTime = (props) => {
   //timeoff fields, same as the db schema
   const initialState = {
@@ -77,6 +79,25 @@ const VacationTime = (props) => {
       setState({
         resArr: payload.data.getalltimeoff,
       });
+      findEmployeeId();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const findEmployeeId = async () => {
+    try {
+      console.log("find employee by id");
+      let response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: ` {getemployeebyemail(email:"${getToken()}"){empid}}`,
+        }),
+      });
+      let payload = await response.json();      
+      console.log(payload.data.getemployeebyemail.empid);
+
+      setState({ empid: payload.data.getemployeebyemail.empid });
     } catch (error) {
       console.log(error);
     }
@@ -185,9 +206,8 @@ const VacationTime = (props) => {
                       id="employeeid-field"
                       required
                       onChange={employeeidOnChange}
-                      value={state.empid}
-                      label="####"
-                      fullWidth
+                      value={state.empid}                   
+                     
                     />
                   </TableCell>
                   <TableCell component="th" scope="row">

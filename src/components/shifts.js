@@ -37,15 +37,46 @@ const Shifts = (props) => {
     eemail: "",
     estartdate: "",
     edob: "",
+    shiftDate: "",
+    shiftStart: "",
+    shiftEnd: "",
+    shifts: [],
+    employeeShifts: [],
+    found: false,
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [state, setState] = useReducer(reducer, initialState);
   const animatedComponents = makeAnimated();
 
+  useEffect(() => {
+    fetchShiftInfo();
+  }, []);
+
   const choseEmployee = (e) => {
     setState({ employeeChosen: true });
+    fetchShiftInfo();
     findEmployee();
+  };
+
+  const addShift = async (e) => {
+    try {
+      console.log(
+        `{addshift(empid:${state.employeeid},date:${state.shiftDate},starttime:${state.shiftStart},endtime:${state.shiftEnd}){shiftid,empid,date,starttime,endtime}}`
+      );
+      let response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: `mutation {addshift(empid:${state.employeeid},date:"${state.shiftDate}",starttime:"${state.shiftStart}",endtime:"${state.shiftEnd}"){shiftid,empid,date,starttime,endtime}}`,
+        }),
+      });
+      let payload = await response.json();
+      fetchShiftInfo();
+      console.log(payload);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const findEmployee = async () => {
@@ -54,27 +85,64 @@ const Shifts = (props) => {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` {getspecificemployee(empid:${state.employeeid}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
+          query: `{getemployeebyID(empid:${state.employeeid}){managerid,department,empid,firstname,lastname,email,dob,startdate}}`,
         }),
       });
       let payload = await response.json();
       setState({
-        emanagerid: payload.data.getspecificemployee.managerid,
-        edepartment: payload.data.getspecificemployee.department,
-        eempid: payload.data.getspecificemployee.empid,
-        efirstname: payload.data.getspecificemployee.firstname,
-        elastname: payload.data.getspecificemployee.lastname,
-        eemail: payload.data.getspecificemployee.email,
-        estartdate: payload.data.getspecificemployee.startdate,
-        edob: payload.data.getspecificemployee.dob,
+        emanagerid: payload.data.getemployeebyID.managerid,
+        edepartment: payload.data.getemployeebyID.department,
+        eempid: payload.data.getemployeebyID.empid,
+        efirstname: payload.data.getemployeebyID.firstname,
+        elastname: payload.data.getemployeebyID.lastname,
+        eemail: payload.data.getemployeebyID.email,
+        estartdate: payload.data.getemployeebyID.startdate,
+        edob: payload.data.getemployeebyID.dob,
         editid: null,
+        found: true,
       });
+
+      console.log(payload.data.getspecificemployee.managerid);
     } catch (error) {
       console.log(error);
     }
   };
   const onEmployeeIdChange = (e) => {
     setState({ employeeid: e.target.value });
+  };
+
+  const onShiftDateChange = (e) => {
+    setState({ shiftDate: e.target.value });
+  };
+
+  const onShiftStartChange = (e) => {
+    setState({ shiftStart: e.target.value });
+  };
+
+  const onShiftEndChange = (e) => {
+    setState({ shiftEnd: e.target.value });
+  };
+
+  const fetchShiftInfo = async () => {
+    try {
+      let response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: `{getallshifts{shiftid,empid,date,starttime,endtime}}`,
+        }),
+      });
+      let payload = await response.json();
+
+      // console.log(payload.data.getallshifts);
+      setState({
+        shifts: payload.data.getallshifts.filter(
+          (shift) => shift.empid == state.employeeid
+        ),
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -114,6 +182,87 @@ const Shifts = (props) => {
           )}
           {state.employeeChosen && (
             <div>
+              <Typography
+                variant="h4"
+                style={{ marginTop: "10px" }}
+                align="center"
+                color="primary"
+              >
+                Add A New Shift
+              </Typography>
+              <CardContent>
+                <TableContainer component={Paper}>
+                  <Table aria-label="member table">
+                    <TableBody>
+                      <TableRow key="headers1">
+                        <TableCell component="th" scope="row">
+                          Date
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          Start Time
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          End Time
+                        </TableCell>
+                      </TableRow>
+                      <TableRow key="fillable1">
+                        <TableCell component="th" scope="row">
+                          <input
+                            style={{ margin: "10px", width: "120px" }}
+                            fullWidth
+                            label="Date"
+                            variant="standard"
+                            type="date"
+                            margin="large"
+                            onChange={onShiftDateChange}
+                            value={state.sfiftDate}
+                            required
+                          />
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          <TextField
+                            id="start-time-field"
+                            required
+                            onChange={onShiftStartChange}
+                            value={state.shiftStart}
+                            label="Start Time"
+                            fullWidth
+                          />
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          <TextField
+                            id="end-time-field"
+                            required
+                            onChange={onShiftEndChange}
+                            value={state.shiftEnd}
+                            label="End Time"
+                            fullWidth
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          scope="row"
+                          style={{ width: 200 }}
+                        >
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            onClick={addShift}
+                            disabled={
+                              !state.shiftDate ||
+                              !state.shiftStart ||
+                              !state.shiftEnd
+                            }
+                          >
+                            ADD
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+
               <Typography variant="h4" color="primary">
                 Employee Found!
               </Typography>
@@ -226,21 +375,21 @@ const Shifts = (props) => {
                       Shift End
                     </TableCell>
                   </TableRow>
-                  {/* // TODO : display and update shifts here */}
-                  {/* <TableRow key="headers2">
-                    <TableCell component="th" scope="row">
-                      Day
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Shift Start
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Shift End
-                    </TableCell>
-                  </TableRow> */}
+                  {state.shifts.map((row) => (
+                    <TableRow key={state.shifts.indexOf(row)}>
+                      <TableCell component="th" scope="row">
+                        {row.date}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {row.starttime}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {row.endtime}
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
-              {/* Add Shifts Here */}
             </div>
           )}
         </form>

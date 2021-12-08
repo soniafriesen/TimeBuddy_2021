@@ -93,7 +93,6 @@ export default function ScheduleMeeting() {
       });
       let payload = await response.json();
 
-      console.log("here");
       console.log(payload.data.getemployeebyemail.empid);
 
       setState({ empid: payload.data.getemployeebyemail.empid });

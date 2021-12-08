@@ -10,6 +10,7 @@ import ScheduleMeeting from "./components/schedulemeeting";
 import Shifts from "./components/shifts";
 import EmployeeInfo from "./components/employee/ViewAddEmployee";
 import TimeOffInfo from "./components/vacationtime/viewaddvaction";
+import ShiftPool from "./components/shiftpool"
 import { getToken } from "./components/token";
 import {
   Toolbar,
@@ -120,6 +121,9 @@ const App = () => {
                 <MenuItem component={Link} to="/shifts" onClick={handleClose}>
                   Shifts
                 </MenuItem>
+                <MenuItem component={Link} to="/shiftpool" onClick={handleClose}>
+                  Shift Pool
+                </MenuItem>
                 <MenuItem
                   component={Link}
                   to="/vacations"
@@ -138,6 +142,7 @@ const App = () => {
         <Route path="/login" render={() => <Login dataFromChild={msgFromChild} />}/>       
         <Route path="/meetings" component={ScheduleMeeting} />
         <Route path="/shifts" component={Shifts} />
+        <Route path="/shiftpool" component={ShiftPool} />
         <Route
           path="/employees"
           render={() => <EmployeeInfo dataFromChild={msgFromChild} />}

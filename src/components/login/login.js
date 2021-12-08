@@ -44,7 +44,6 @@ const LoginPage = (props) => {
           setState({ valid: true });
           console.log("Logging in...");
           sessionStorage.setItem("token", state.email);
-          getToken();
         }
       } else if (state.email !== payload.data.showspecificemployeelogin.email) {
         setState({ valid: false });

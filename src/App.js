@@ -10,7 +10,8 @@ import ScheduleMeeting from "./components/schedulemeeting";
 import Shifts from "./components/shifts";
 import EmployeeInfo from "./components/employee/ViewAddEmployee";
 import TimeOffInfo from "./components/vacationtime/viewaddvaction";
-import ShiftPool from "./components/shiftpool"
+import ShiftPool from "./components/shiftpool";
+import Emergency from "./components/emergency/emergency";
 import { getToken } from "./components/token";
 import {
   Toolbar,
@@ -97,7 +98,7 @@ const App = () => {
               <div>
                 <MenuItem component={Link} to="/login" onClick={handleClose}>
                   Login
-                </MenuItem>                
+                </MenuItem>
               </div>
             ) : null}
 
@@ -110,17 +111,17 @@ const App = () => {
                 >
                   Employees
                 </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/meetings"
-                  onClick={handleClose}
-                >
+                <MenuItem component={Link} to="/meetings" onClick={handleClose}>
                   Meetings
                 </MenuItem>
                 <MenuItem component={Link} to="/shifts" onClick={handleClose}>
                   Shifts
                 </MenuItem>
-                <MenuItem component={Link} to="/shiftpool" onClick={handleClose}>
+                <MenuItem
+                  component={Link}
+                  to="/shiftpool"
+                  onClick={handleClose}
+                >
                   Shift Pool
                 </MenuItem>
                 <MenuItem
@@ -130,6 +131,13 @@ const App = () => {
                 >
                   Time Off
                 </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/emergency"
+                  onClick={handleClose}
+                >
+                  Emergencies
+                </MenuItem>
               </div>
             ) : null}
           </Menu>
@@ -138,7 +146,10 @@ const App = () => {
       <div>
         <Route exact path="/" render={() => <Redirect to="/home" />} />
         <Route path="/home" component={Home} />
-        <Route path="/login" render={() => <Login dataFromChild={msgFromChild} />}/>       
+        <Route
+          path="/login"
+          render={() => <Login dataFromChild={msgFromChild} />}
+        />
         <Route path="/meetings" component={ScheduleMeeting} />
         <Route path="/shifts" component={Shifts} />
         <Route path="/shiftpool" component={ShiftPool} />
@@ -149,6 +160,10 @@ const App = () => {
         <Route
           path="/vacations"
           render={() => <TimeOffInfo dataFromChild={msgFromChild} />}
+        />
+        <Route
+          path="/emergency"
+          render={() => <Emergency dataFromChild={msgFromChild} />}
         />
       </div>
       <Snackbar

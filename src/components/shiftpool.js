@@ -17,14 +17,13 @@ import { getToken } from "./token";
 const GRAPHURL = "http://localhost:5000/graphql";
 
 export default function ShiftPool() {
-
   const initialState = {
-    empid:"",
+    empid: "",
     shifts: [],
     allshifts: [],
-    addid:"",
-    takeid:"",
-    shiftsinpool: []
+    addid: "",
+    takeid: "",
+    shiftsinpool: [],
   };
 
   //modal variables
@@ -46,20 +45,20 @@ export default function ShiftPool() {
 
   const fetchShiftInfo = async () => {
     try {
-      let empid=state.empid;
-      if(empid==0) {
-      let response = await fetch(GRAPHURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          query: ` {getemployeebyemail(email:"${getToken()}"){empid}}`,
-        }),
-      });
-      let payload = await response.json();
+      let empid = state.empid;
+      if (empid === 0) {
+        let response = await fetch(GRAPHURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({
+            query: ` {getemployeebyemail(email:"${getToken()}"){empid}}`,
+          }),
+        });
+        let payload = await response.json();
 
-      setState({ empid: payload.data.getemployeebyemail.empid, });
-      empid=payload.data.getemployeebyemail.empid;
-    }
+        setState({ empid: payload.data.getemployeebyemail.empid });
+        empid = payload.data.getemployeebyemail.empid;
+      }
 
       let response = await fetch(GRAPHURL, {
         method: "POST",
@@ -75,9 +74,8 @@ export default function ShiftPool() {
       );
 
       setState({
-        shifts:filteredshifts,
+        shifts: filteredshifts,
       });
-
     } catch (error) {
       console.log(error);
     }
@@ -95,9 +93,8 @@ export default function ShiftPool() {
       let payload = await response.json();
 
       setState({
-        shiftsinpool:payload.data.getallinpool
+        shiftsinpool: payload.data.getallinpool,
       });
-
     } catch (error) {
       console.log(error);
     }
@@ -105,54 +102,54 @@ export default function ShiftPool() {
 
   const addShiftToPool = async () => {
     try {
-        let response = null;
-  
-        response = await fetch(GRAPHURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({
-            query: ` mutation { addshifttopool (shiftid: ${state.addid}) { shiftid, date, starttime, endtime } } `,
-          }),
-        });
-        await response.json();
+      let response = null;
 
-        setState({
-            addid:""
-        })
-  
-        fetchShiftInfo();
-        fetchShiftsInPool();
-      } catch (error) {
-        console.log(error);
-      }
-  }
+      response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: ` mutation { addshifttopool (shiftid: ${state.addid}) { shiftid, date, starttime, endtime } } `,
+        }),
+      });
+      await response.json();
+
+      setState({
+        addid: "",
+      });
+
+      fetchShiftInfo();
+      fetchShiftsInPool();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const takeShiftFromPool = async () => {
     try {
-        let response = await fetch(GRAPHURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({
-            query: `{ removeshiftfrompool (shiftid: ${state.takeid}, empid: ${state.empid}) }`,
-          }),
-        });
-        await response.json();
-  
-        setState({
-            takeid:""
-        })
+      let response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: `{ removeshiftfrompool (shiftid: ${state.takeid}, empid: ${state.empid}) }`,
+        }),
+      });
+      await response.json();
 
-        fetchShiftInfo();
-        fetchShiftsInPool();
-      } catch (error) {
-        console.log(error);
-      }
-  }
+      setState({
+        takeid: "",
+      });
+
+      fetchShiftInfo();
+      fetchShiftsInPool();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <MuiThemeProvider theme={theme}>
       <Card>
-        <CardContent  align="center">
+        <CardContent align="center">
           <Typography variant="h4" color="primary">
             Shift Pool
           </Typography>
@@ -168,7 +165,6 @@ export default function ShiftPool() {
               }}
               align="center"
             >
-
               <Typography
                 color="primary"
                 variant="h5"
@@ -177,41 +173,41 @@ export default function ShiftPool() {
               >
                 Current Shifts
               </Typography>
-                <div>
+              <div>
                 <Table aria-label="member table">
-                <TableBody>
-                  <TableRow key="headers1">
-                    <TableCell component="th" scope="row">
-                      Shift ID
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Day
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Shift Start
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Shift End
-                    </TableCell>
-                  </TableRow>
-                  {state.shifts.map((row) => (
-                    <TableRow key={state.shifts.indexOf(row)}>
-                    <TableCell component="th" scope="row">
-                      {row.shiftid}
-                    </TableCell>
+                  <TableBody>
+                    <TableRow key="headers1">
                       <TableCell component="th" scope="row">
-                        {row.date}
+                        Shift ID
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {row.starttime}
+                        Day
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {row.endtime}
+                        Shift Start
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        Shift End
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                    {state.shifts.map((row) => (
+                      <TableRow key={state.shifts.indexOf(row)}>
+                        <TableCell component="th" scope="row">
+                          {row.shiftid}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {row.date}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {row.starttime}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {row.endtime}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
 
               <div align="center">
@@ -224,7 +220,7 @@ export default function ShiftPool() {
                   />
                 </div>
                 <Button
-                  style={{ color: "blue" }}
+                  color="primary"
                   variant="outlined"
                   onClick={addShiftToPool}
                 >
@@ -243,39 +239,39 @@ export default function ShiftPool() {
               </Typography>
               <div>
                 <Table aria-label="member table">
-                <TableBody>
-                  <TableRow key="headers1">
-                    <TableCell component="th" scope="row">
-                      Shift ID
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Day
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Shift Start
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Shift End
-                    </TableCell>
-                  </TableRow>
-                  {state.shiftsinpool.map((row) => (
-                    <TableRow key={state.shifts.indexOf(row)}>
-                    <TableCell component="th" scope="row">
-                      {row.shiftid}
-                    </TableCell>
+                  <TableBody>
+                    <TableRow key="headers1">
                       <TableCell component="th" scope="row">
-                        {row.date}
+                        Shift ID
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {row.starttime}
+                        Day
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {row.endtime}
+                        Shift Start
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        Shift End
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                    {state.shiftsinpool.map((row) => (
+                      <TableRow key={state.shifts.indexOf(row)}>
+                        <TableCell component="th" scope="row">
+                          {row.shiftid}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {row.date}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {row.starttime}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {row.endtime}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
 
               <div className="MeetingInfo" align="center">
@@ -288,7 +284,7 @@ export default function ShiftPool() {
                   />
                 </div>
                 <Button
-                  style={{ color: "blue" }}
+                  color="primary"
                   variant="outlined"
                   onClick={takeShiftFromPool}
                 >
@@ -296,7 +292,6 @@ export default function ShiftPool() {
                 </Button>
                 <br />
               </div>
-
             </form>
           ) : (
             <Typography color="secondary">Not logged in</Typography>

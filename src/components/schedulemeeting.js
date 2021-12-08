@@ -131,7 +131,6 @@ export default function ScheduleMeeting() {
         }),
       });
       let payload = await response.json();
-
       setState({
         editid: "",
       });

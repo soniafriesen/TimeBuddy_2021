@@ -72,7 +72,7 @@ const UpdateVacationModal = (props) => {
           query: ` mutation{updateapproval(toid:${state.edittoid}){toid,empid,startdate,enddate,description,approved,requestdate}}`,
         }),
       });
-      let payload = await response.json();
+      let payload = await response.json();      
       setState({
         toid: null,
         empid: 0,

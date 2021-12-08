@@ -19,7 +19,7 @@ const GRAPHURL = "http://localhost:5000/graphql";
 export default function ShiftPool() {
 
   const initialState = {
-    empid:0,
+    empid:"",
     shifts: [],
     allshifts: [],
     addid:"",
@@ -46,6 +46,21 @@ export default function ShiftPool() {
 
   const fetchShiftInfo = async () => {
     try {
+      let empid=state.empid;
+      if(empid==0) {
+      let response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: ` {getemployeebyemail(email:"${getToken()}"){empid}}`,
+        }),
+      });
+      let payload = await response.json();
+
+      setState({ empid: payload.data.getemployeebyemail.empid, });
+      empid=payload.data.getemployeebyemail.empid;
+    }
+
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -55,11 +70,14 @@ export default function ShiftPool() {
       });
       let payload = await response.json();
 
-      setState({
-        allshifts:payload.data.getallshifts
-      });
+      let filteredshifts = payload.data.getallshifts.filter(
+        (shift) => shift.empid === empid
+      );
+      console.log(filteredshifts);
 
-      findEmployeeId();
+      setState({
+        shifts:filteredshifts,
+      });
 
     } catch (error) {
       console.log(error);
@@ -76,15 +94,11 @@ export default function ShiftPool() {
         }),
       });
       let payload = await response.json();
+      let empidh = payload.data.getemployeebyemail.empid;
+      console.log("here" + empidh);
 
-      setState({ empid: payload.data.getemployeebyemail.empid });
+      setState({ empid: empidh });
       
-      let filteredshifts = state.allshifts.filter(
-            (shift) => shift.empid == state.empid
-          );
-      setState({
-          shifts:filteredshifts
-      });
     } catch (error) {
       console.log(error);
     }
@@ -96,7 +110,7 @@ export default function ShiftPool() {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: `{getallinpool(shiftid,date,starttime,endtime}} }`,
+          query: `{getallinpool{shiftid,date,starttime,endtime}}`,
         }),
       });
       let payload = await response.json();
@@ -111,11 +125,49 @@ export default function ShiftPool() {
   };
 
   const addShiftToPool = async () => {
-      //do
+    try {
+        let response = null;
+  
+        response = await fetch(GRAPHURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({
+            query: ` mutation { addshifttopool (shiftid: ${state.addid}) { shiftid, date, starttime, endtime } } `,
+          }),
+        });
+        await response.json();
+
+        setState({
+            addid:""
+        })
+  
+        fetchShiftInfo();
+        fetchShiftsInPool();
+      } catch (error) {
+        console.log(error);
+      }
   }
 
   const takeShiftFromPool = async () => {
-      //do
+    try {
+        let response = await fetch(GRAPHURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({
+            query: `{ removeshiftfrompool (shiftid: ${state.takeid}, empid: ${state.empid}) }`,
+          }),
+        });
+        await response.json();
+  
+        setState({
+            takeid:""
+        })
+
+        fetchShiftInfo();
+        fetchShiftsInPool();
+      } catch (error) {
+        console.log(error);
+      }
   }
 
   return (

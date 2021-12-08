@@ -54,10 +54,6 @@ export default function ScheduleMeeting() {
     setState({ editid: e.target.value });
   };
 
-  const setShow = (e) => {
-    setState({ show: true });
-  };
-
   const fetchMeetingInfo = async () => {
     try {
       let response = await fetch(GRAPHURL, {
@@ -101,15 +97,9 @@ export default function ScheduleMeeting() {
     }
   };
 
-  const msgfromchild = async () => {
-    setState({ show: false });
-    fetchMeetingInfo();
-  };
-
   const addMeetingInfo = async () => {
     try {
       let response = null;
-      let payload = null;
 
       //add meeting collection
       response = await fetch(GRAPHURL, {
@@ -120,7 +110,7 @@ export default function ScheduleMeeting() {
                                { empid, date, starttime, message } } `,
         }),
       });
-      payload = await response.json();
+      await response.json();
 
       setState({
         date: "",
@@ -158,11 +148,6 @@ export default function ScheduleMeeting() {
     }
   };
 
-  const initialize = async () => {
-    setState({ status: "update" });
-    setShow(true);
-  };
-
   return (
     <MuiThemeProvider theme={theme}>
       <Card>
@@ -193,7 +178,6 @@ export default function ScheduleMeeting() {
                     margin="large"
                     required
                     id="date"
-                    required
                     onChange={dateOnChange}
                     value={state.date}
                   />
@@ -209,7 +193,6 @@ export default function ScheduleMeeting() {
                     size="large"
                     required
                     id="time"
-                    required
                     onChange={timeOnChange}
                     value={state.time}
                   />
@@ -222,7 +205,6 @@ export default function ScheduleMeeting() {
                   size="small"
                   required
                   id="message"
-                  required
                   onChange={messageOnChange}
                   value={state.message}
                 />

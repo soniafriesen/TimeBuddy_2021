@@ -1,8 +1,6 @@
-import makeAnimated from "react-select/animated";
 import { getToken } from "./token";
 import React, { useReducer, useEffect } from "react";
 import {
-  Card,
   CardContent,
   TextField,
   Table,
@@ -13,8 +11,6 @@ import {
   Paper,
   Button,
   Typography,
-  Modal,
-  Box,
 } from "@material-ui/core";
 const GRAPHURL = "http://localhost:5000/graphql";
 
@@ -47,7 +43,6 @@ const Shifts = (props) => {
 
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [state, setState] = useReducer(reducer, initialState);
-  const animatedComponents = makeAnimated();
 
   useEffect(() => {
     fetchShiftInfo();
@@ -107,7 +102,7 @@ const Shifts = (props) => {
       console.log(error);
     }
   };
-  
+
   const onEmployeeIdChange = (e) => {
     setState({ employeeid: e.target.value });
   };
@@ -138,7 +133,7 @@ const Shifts = (props) => {
       // console.log(payload.data.getallshifts);
       setState({
         shifts: payload.data.getallshifts.filter(
-          (shift) => shift.empid == state.employeeid
+          (shift) => shift.empid === state.employeeid
         ),
       });
     } catch (error) {

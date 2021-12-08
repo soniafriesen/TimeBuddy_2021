@@ -73,7 +73,6 @@ const UpdateVacationModal = (props) => {
         }),
       });
       let payload = await response.json();
-      console.log(payload);
       setState({
         toid: null,
         empid: 0,

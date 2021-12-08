@@ -56,9 +56,6 @@ const Shifts = (props) => {
 
   const addShift = async (e) => {
     try {
-      console.log(
-        `{addshift(empid:${state.employeeid},date:${state.shiftDate},starttime:${state.shiftStart},endtime:${state.shiftEnd}){shiftid,empid,date,starttime,endtime}}`
-      );
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -68,7 +65,6 @@ const Shifts = (props) => {
       });
       let payload = await response.json();
       fetchShiftInfo();
-      console.log(payload);
     } catch (error) {
       console.log(error);
     }
@@ -97,7 +93,6 @@ const Shifts = (props) => {
         found: true,
       });
 
-      console.log(payload.data.getspecificemployee.managerid);
     } catch (error) {
       console.log(error);
     }
@@ -130,7 +125,6 @@ const Shifts = (props) => {
       });
       let payload = await response.json();
 
-      // console.log(payload.data.getallshifts);
       setState({
         shifts: payload.data.getallshifts.filter(
           (shift) => shift.empid === state.employeeid

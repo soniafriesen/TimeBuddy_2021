@@ -66,7 +66,6 @@ export default function ScheduleMeeting() {
       });
       let payload = await response.json();
 
-      console.log(payload.data.getallmeetings);
       setState({
         resArr: payload.data.getallmeetings,
       });
@@ -79,7 +78,6 @@ export default function ScheduleMeeting() {
 
   const findEmployeeId = async () => {
     try {
-      console.log("find employee by id");
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -88,8 +86,6 @@ export default function ScheduleMeeting() {
         }),
       });
       let payload = await response.json();
-
-      console.log(payload.data.getemployeebyemail.empid);
 
       setState({ empid: payload.data.getemployeebyemail.empid });
     } catch (error) {
@@ -135,8 +131,6 @@ export default function ScheduleMeeting() {
         }),
       });
       let payload = await response.json();
-
-      console.log(payload.data.removemeeting);
 
       setState({
         editid: "",

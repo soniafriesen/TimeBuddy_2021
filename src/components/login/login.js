@@ -42,7 +42,6 @@ const LoginPage = (props) => {
           setState({ message: "Invalid login, check email or password!" });
         } else {
           setState({ valid: true });
-          console.log("Logging in...");
           sessionStorage.setItem("token", state.email);
         }
       } else if (state.email !== payload.data.showspecificemployeelogin.email) {

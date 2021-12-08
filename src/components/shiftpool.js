@@ -73,32 +73,11 @@ export default function ShiftPool() {
       let filteredshifts = payload.data.getallshifts.filter(
         (shift) => shift.empid === empid
       );
-      console.log(filteredshifts);
 
       setState({
         shifts:filteredshifts,
       });
 
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const findEmployeeId = async () => {
-    try {
-      let response = await fetch(GRAPHURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          query: ` {getemployeebyemail(email:"${getToken()}"){empid}}`,
-        }),
-      });
-      let payload = await response.json();
-      let empidh = payload.data.getemployeebyemail.empid;
-      console.log("here" + empidh);
-
-      setState({ empid: empidh });
-      
     } catch (error) {
       console.log(error);
     }

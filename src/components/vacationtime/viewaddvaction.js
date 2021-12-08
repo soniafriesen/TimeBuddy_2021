@@ -75,7 +75,6 @@ const VacationTime = (props) => {
       props.dataFromChild(
         `found ${payload.data.getalltimeoff.length} vacations`
       );
-      console.log(payload.data.getalltimeoff);
       setState({
         resArr: payload.data.getalltimeoff,
       });
@@ -86,7 +85,6 @@ const VacationTime = (props) => {
   };
   const findEmployeeId = async () => {
     try {
-      console.log("find employee by id");
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -95,7 +93,6 @@ const VacationTime = (props) => {
         }),
       });
       let payload = await response.json();      
-      console.log(payload.data.getemployeebyemail.empid);
 
       setState({ empid: payload.data.getemployeebyemail.empid });
     } catch (error) {
@@ -152,7 +149,6 @@ const VacationTime = (props) => {
       });
       let payload = await response.json();
       props.dataFromChild(`${payload.data.canceltimeoff}`);
-      console.log(payload.data.canceltimeoff);
       setState({
         empid: null,
         startdate: "",

@@ -47,7 +47,6 @@ const App = () => {
   };
 
   const logout = () => {
-    console.log("logout");
     sessionStorage.removeItem("token");
     window.location.reload(false);
   };

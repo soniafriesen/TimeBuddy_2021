@@ -749,7 +749,7 @@ const resolvers = {
     let min = Math.ceil(1001);
     let max = Math.floor(9999);
     let random = Math.floor(Math.random() * (max - min + 1)) + min;
-    let emergency = await dbRtns.findAll(db, timesoff, {});
+    let emergency = await dbRtns.findAll(db, emergencies, {});
     if (emergency) {
       let doesExist = true;
       while (doesExist) {

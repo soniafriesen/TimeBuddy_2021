@@ -54,10 +54,6 @@ export default function ScheduleMeeting() {
     setState({ editid: e.target.value });
   };
 
-  const setShow = (e) => {
-    setState({ show: true });
-  };
-
   const fetchMeetingInfo = async () => {
     try {
       let response = await fetch(GRAPHURL, {
@@ -70,7 +66,6 @@ export default function ScheduleMeeting() {
       });
       let payload = await response.json();
 
-      console.log(payload.data.getallmeetings);
       setState({
         resArr: payload.data.getallmeetings,
       });
@@ -83,7 +78,6 @@ export default function ScheduleMeeting() {
 
   const findEmployeeId = async () => {
     try {
-      console.log("find employee by id");
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -93,24 +87,15 @@ export default function ScheduleMeeting() {
       });
       let payload = await response.json();
 
-      console.log("here");
-      console.log(payload.data.getemployeebyemail.empid);
-
       setState({ empid: payload.data.getemployeebyemail.empid });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const msgfromchild = async () => {
-    setState({ show: false });
-    fetchMeetingInfo();
-  };
-
   const addMeetingInfo = async () => {
     try {
       let response = null;
-      let payload = null;
 
       //add meeting collection
       response = await fetch(GRAPHURL, {
@@ -121,7 +106,7 @@ export default function ScheduleMeeting() {
                                { empid, date, starttime, message } } `,
         }),
       });
-      payload = await response.json();
+      await response.json();
 
       setState({
         date: "",
@@ -146,9 +131,6 @@ export default function ScheduleMeeting() {
         }),
       });
       let payload = await response.json();
-
-      console.log(payload.data.removemeeting);
-
       setState({
         editid: "",
       });
@@ -157,11 +139,6 @@ export default function ScheduleMeeting() {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const initialize = async () => {
-    setState({ status: "update" });
-    setShow(true);
   };
 
   return (
@@ -194,7 +171,6 @@ export default function ScheduleMeeting() {
                     margin="large"
                     required
                     id="date"
-                    required
                     onChange={dateOnChange}
                     value={state.date}
                   />
@@ -210,7 +186,6 @@ export default function ScheduleMeeting() {
                     size="large"
                     required
                     id="time"
-                    required
                     onChange={timeOnChange}
                     value={state.time}
                   />
@@ -223,7 +198,6 @@ export default function ScheduleMeeting() {
                   size="small"
                   required
                   id="message"
-                  required
                   onChange={messageOnChange}
                   value={state.message}
                 />

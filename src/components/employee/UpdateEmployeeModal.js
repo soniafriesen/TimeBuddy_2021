@@ -88,7 +88,6 @@ const UpdateEmployeeModal = (props) => {
         }),
       });
       let payload = await response.json();
-      console.log(payload);
       setState({
         managerid: null,
         department: "",

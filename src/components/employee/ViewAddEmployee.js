@@ -85,7 +85,6 @@ const EmployeeInfo = (props) => {
       props.dataFromChild(
         `found ${payload.data.getallemployees.length} employees`
       );
-      console.log(payload.data.getallemployees);
       setState({
         resArr: payload.data.getallemployees,
       });
@@ -158,7 +157,6 @@ const EmployeeInfo = (props) => {
       });
       let payload = await response.json();
       props.dataFromChild(`${payload.data.getemployeebyID.firstname}`);
-      console.log(payload.data.getemployeebyID.firstname);
       let UserEmail = payload.data.getemployeebyID.email;
 
       //delete their log in as well
@@ -171,7 +169,6 @@ const EmployeeInfo = (props) => {
       });
       payload = await response.json();
       props.dataFromChild(`${payload.data.removelogin}`);
-      console.log(payload.data.removelogin);
 
       //delete employee from database
       response = await fetch(GRAPHURL, {
@@ -183,7 +180,7 @@ const EmployeeInfo = (props) => {
       });
       payload = await response.json();
       props.dataFromChild(`${payload.data.deleteemployee}`);
-      console.log(payload.data.deleteemployee);
+      
       setState({
         managerid: null,
         department: "",

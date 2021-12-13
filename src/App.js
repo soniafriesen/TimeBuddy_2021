@@ -10,6 +10,8 @@ import ScheduleMeeting from "./components/schedulemeeting";
 import Shifts from "./components/shifts";
 import EmployeeInfo from "./components/employee/ViewAddEmployee";
 import TimeOffInfo from "./components/vacationtime/viewaddvaction";
+import ShiftPool from "./components/shiftpool";
+import Emergency from "./components/emergency/emergency";
 import { getToken } from "./components/token";
 import {
   Toolbar,
@@ -46,7 +48,6 @@ const App = () => {
   };
 
   const logout = () => {
-    console.log("logout");
     sessionStorage.removeItem("token");
     window.location.reload(false);
   };
@@ -97,7 +98,7 @@ const App = () => {
               <div>
                 <MenuItem component={Link} to="/login" onClick={handleClose}>
                   Login
-                </MenuItem>                
+                </MenuItem>
               </div>
             ) : null}
 
@@ -110,11 +111,7 @@ const App = () => {
                 >
                   Employees
                 </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/meetings"
-                  onClick={handleClose}
-                >
+                <MenuItem component={Link} to="/meetings" onClick={handleClose}>
                   Meetings
                 </MenuItem>
                 <MenuItem component={Link} to="/shifts" onClick={handleClose}>
@@ -122,10 +119,24 @@ const App = () => {
                 </MenuItem>
                 <MenuItem
                   component={Link}
+                  to="/shiftpool"
+                  onClick={handleClose}
+                >
+                  Shift Pool
+                </MenuItem>
+                <MenuItem
+                  component={Link}
                   to="/vacations"
                   onClick={handleClose}
                 >
                   Time Off
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/emergency"
+                  onClick={handleClose}
+                >
+                  Emergencies
                 </MenuItem>
               </div>
             ) : null}
@@ -135,9 +146,13 @@ const App = () => {
       <div>
         <Route exact path="/" render={() => <Redirect to="/home" />} />
         <Route path="/home" component={Home} />
-        <Route path="/login" render={() => <Login dataFromChild={msgFromChild} />}/>       
+        <Route
+          path="/login"
+          render={() => <Login dataFromChild={msgFromChild} />}
+        />
         <Route path="/meetings" component={ScheduleMeeting} />
         <Route path="/shifts" component={Shifts} />
+        <Route path="/shiftpool" component={ShiftPool} />
         <Route
           path="/employees"
           render={() => <EmployeeInfo dataFromChild={msgFromChild} />}
@@ -145,6 +160,10 @@ const App = () => {
         <Route
           path="/vacations"
           render={() => <TimeOffInfo dataFromChild={msgFromChild} />}
+        />
+        <Route
+          path="/emergency"
+          render={() => <Emergency dataFromChild={msgFromChild} />}
         />
       </div>
       <Snackbar

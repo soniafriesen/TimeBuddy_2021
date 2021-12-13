@@ -151,7 +151,10 @@ const App = () => {
           render={() => <Login dataFromChild={msgFromChild} />}
         />
         <Route path="/meetings" component={ScheduleMeeting} />
-        <Route path="/shifts" component={Shifts} />
+        <Route
+          path="/shifts"
+          render={() => <Shifts dataFromChild={msgFromChild} />}
+        />
         <Route path="/shiftpool" component={ShiftPool} />
         <Route
           path="/employees"

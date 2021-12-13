@@ -54,12 +54,12 @@ const Shifts = (props) => {
     fetchShiftInfo();
   }, []);
 
-  const choseEmployee = (e) => {
-    setState({ employeeChosen: true });
-    findEmployee();
+
+  const msgfromchild = async () => {
+    setState({ show: false });
+    props.dataFromChild(`updated Shift`);
     fetchShiftInfo();
   };
-
   const addShift = async (e) => {
     try {
       console.log(
@@ -73,19 +73,7 @@ const Shifts = (props) => {
         }),
       });
       let payload = await response.json();
-      // fetchShiftInfo();
-
-      let shiftToAdd = {
-        shiftid: 0,
-        empid: state.employeeaddid,
-        date: state.shiftDate,
-        starttime: state.shiftStart,
-        endtime: state.shiftEnd,
-      };
-      var joined = state.shifts.concat(shiftToAdd);
-      setState({
-        shifts: joined,
-      });
+      fetchShiftInfo();
       console.log(payload.data.addshift.shiftid);
     } catch (error) {
       console.log(error);
@@ -165,9 +153,7 @@ const Shifts = (props) => {
 
       console.log(payload.data.getallshifts);
       setState({
-        shifts: payload.data.getallshifts.filter(
-          (shift) => shift.empid === state.employeeid
-        ),
+        shifts: payload.data.getallshifts,
       });
     } catch (error) {
       console.log(error);
@@ -218,13 +204,16 @@ const Shifts = (props) => {
                   <TableBody>
                     <TableRow key="headers1">
                       <TableCell component="th" scope="row">
+                        <div align="center">Employee ID</div>
+                      </TableCell>
+                      <TableCell component="th" scope="row">
                         Date
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        Start Time
+                        <div align="center">Start Time</div>
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        End Time
+                        <div align="center"> End Time</div>
                       </TableCell>
                     </TableRow>
                     <TableRow key="fillable1">
@@ -309,27 +298,7 @@ const Shifts = (props) => {
                 borderWidth: "1px",
                 margin: "10px",
               }}
-            >
-              <div style={{ margintop: "50px" }}>
-                <TextField
-                  style={{ margin: "10px", width: "120px" }}
-                  fullWidth
-                  label="Employee ID"
-                  variant="standard"
-                  margin="dense"
-                  size="small"
-                  onChange={onEmployeeIdChange}
-                  required
-                />
-                <Button
-                  style={{ margin: "10px", width: "120px" }}
-                  color="secondary"
-                  variant="outlined"
-                  onClick={() => choseEmployee({ employeeChosen: true })}
-                >
-                  View Shifts
-                </Button>
-              </div>
+            >              
               <div style={{ margintop: "50px" }}>
                 <Button
                   style={{ margin: "10px", width: "120px" }}
@@ -352,14 +321,9 @@ const Shifts = (props) => {
                 >
                   Delete
                 </Button>
-                <UpdateModal onClose={fetchShiftInfo} show={state.show} />
+                <UpdateModal onClose={fetchShiftInfo} show={state.show} refresh={msgfromchild}/>
               </div>
-            </div>
-            {state.employeeChosen && (
-              <Typography variant="h4" color="primary">
-                Showing Shifts For Employee #{state.employeeid}
-              </Typography>
-            )}
+            </div>            
             <Typography
               variant="h4"
               style={{ margin: "10px", marginTop: "40px" }}

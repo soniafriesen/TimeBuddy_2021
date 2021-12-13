@@ -97,6 +97,7 @@ const UpdateShiftModal = (props) => {
         dob: "",
         show: props.onClose,
       });
+      props.refresh(true);
     } catch (error) {
       console.log(error);
     }

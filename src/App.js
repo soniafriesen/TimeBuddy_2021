@@ -7,10 +7,10 @@ import theme from "./theme";
 import Home from "./components/home";
 import Login from "./components/login/login";
 import ScheduleMeeting from "./components/schedulemeeting";
-import Shifts from "./components/shifts";
+import Shifts from "./components/Shifts/shifts";
 import EmployeeInfo from "./components/employee/ViewAddEmployee";
 import TimeOffInfo from "./components/vacationtime/viewaddvaction";
-import ShiftPool from "./components/shiftpool";
+import ShiftPool from "./components/Shifts/shiftpool";
 import Emergency from "./components/emergency/emergency";
 import { getToken } from "./components/token";
 import {

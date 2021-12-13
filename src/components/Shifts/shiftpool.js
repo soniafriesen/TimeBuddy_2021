@@ -11,8 +11,8 @@ import {
   TableCell,
 } from "@material-ui/core";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import theme from "../theme";
-import { getToken } from "./token";
+import theme from "../../theme";
+import { getToken } from "../token";
 
 const GRAPHURL = "http://localhost:5000/graphql";
 

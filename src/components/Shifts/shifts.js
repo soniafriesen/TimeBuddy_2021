@@ -1,4 +1,4 @@
-import { getToken } from "./token";
+import { getToken } from "../token";
 import React, { useReducer, useEffect } from "react";
 import {
   CardContent,

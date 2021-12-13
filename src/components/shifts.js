@@ -16,10 +16,14 @@ import {
   Modal,
   Box,
 } from "@material-ui/core";
+import UpdateModal from "./UpdateShiftModal"; //update modal
+
 const GRAPHURL = "http://localhost:5000/graphql";
 
 const Shifts = (props) => {
   const initialState = {
+    show: false,
+    shiftsAdded: [],
     managerid: null,
     department: "",
     firstname: "",
@@ -29,6 +33,7 @@ const Shifts = (props) => {
     dob: "",
     employeeChosen: false,
     employeeid: "",
+    employeeaddid: "",
     emanagerid: null,
     edepartment: "",
     eempid: null,
@@ -43,6 +48,7 @@ const Shifts = (props) => {
     shifts: [],
     employeeShifts: [],
     found: false,
+    editid: null,
   };
 
   const reducer = (state, newState) => ({ ...state, ...newState });
@@ -55,25 +61,37 @@ const Shifts = (props) => {
 
   const choseEmployee = (e) => {
     setState({ employeeChosen: true });
-    fetchShiftInfo();
     findEmployee();
+    fetchShiftInfo();
   };
 
   const addShift = async (e) => {
     try {
       console.log(
-        `{addshift(empid:${state.employeeid},date:${state.shiftDate},starttime:${state.shiftStart},endtime:${state.shiftEnd}){shiftid,empid,date,starttime,endtime}}`
+        `{addshift(empid:${state.employeeaddid},date:${state.shiftDate},starttime:${state.shiftStart},endtime:${state.shiftEnd}){shiftid,empid,date,starttime,endtime}}`
       );
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: `mutation {addshift(empid:${state.employeeid},date:"${state.shiftDate}",starttime:"${state.shiftStart}",endtime:"${state.shiftEnd}"){shiftid,empid,date,starttime,endtime}}`,
+          query: `mutation {addshift(empid:${state.employeeaddid},date:"${state.shiftDate}",starttime:"${state.shiftStart}",endtime:"${state.shiftEnd}"){shiftid,empid,date,starttime,endtime}}`,
         }),
       });
       let payload = await response.json();
-      fetchShiftInfo();
-      console.log(payload);
+      // fetchShiftInfo();
+
+      let shiftToAdd = {
+        shiftid: 0,
+        empid: state.employeeaddid,
+        date: state.shiftDate,
+        starttime: state.shiftStart,
+        endtime: state.shiftEnd,
+      };
+      var joined = state.shifts.concat(shiftToAdd);
+      setState({
+        shifts: joined,
+      });
+      console.log(payload.data.addshift.shiftid);
     } catch (error) {
       console.log(error);
     }
@@ -102,13 +120,17 @@ const Shifts = (props) => {
         found: true,
       });
 
-      console.log(payload.data.getspecificemployee.managerid);
+      console.log(payload.data.getemployeebyID.managerid);
     } catch (error) {
       console.log(error);
     }
   };
   const onEmployeeIdChange = (e) => {
     setState({ employeeid: e.target.value });
+  };
+
+  const onEmployeeAddIdChange = (e) => {
+    setState({ employeeaddid: e.target.value });
   };
 
   const onShiftDateChange = (e) => {
@@ -122,8 +144,19 @@ const Shifts = (props) => {
   const onShiftEndChange = (e) => {
     setState({ shiftEnd: e.target.value });
   };
+  const onDeleteIdChange = (e) => {
+    setState({ editid: e.target.value });
+  };
 
+  const initialize = async () => {
+    setState({ status: "update" });
+    setShow(true);
+  };
+  const setShow = (e) => {
+    setState({ show: true });
+  };
   const fetchShiftInfo = async () => {
+    setState({ show: false });
     try {
       let response = await fetch(GRAPHURL, {
         method: "POST",
@@ -134,7 +167,7 @@ const Shifts = (props) => {
       });
       let payload = await response.json();
 
-      // console.log(payload.data.getallshifts);
+      console.log(payload.data.getallshifts);
       setState({
         shifts: payload.data.getallshifts.filter(
           (shift) => shift.empid == state.employeeid
@@ -145,12 +178,26 @@ const Shifts = (props) => {
     }
   };
 
+  const deleteShift = async () => {
+    try {
+      //delete employee from database
+      var response = await fetch(GRAPHURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          query: `{ deleteshift (shiftid: ${state.editid}) }`,
+        }),
+      });
+      var payload = await response.json();
+
+      fetchShiftInfo();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <CardContent>
-      <Typography variant="h4" color="primary">
-        Find/Update Employee's Shifts
-      </Typography>
-
       {getToken() ? (
         <form
           style={{
@@ -160,238 +207,212 @@ const Shifts = (props) => {
           }}
           align="center"
         >
-          {!state.employeeChosen && (
-            <div>
-              <TextField
-                fullWidth
-                label="Employee ID"
-                variant="standard"
-                margin="dense"
-                size="small"
-                onChange={onEmployeeIdChange}
-                required
-              />
-              <Button
-                color="secondary"
-                variant="outlined"
-                onClick={() => choseEmployee({ employeeChosen: true })}
-              >
-                Find Employee
-              </Button>{" "}
-            </div>
-          )}
-          {state.employeeChosen && (
-            <div>
-              <Typography
-                variant="h4"
-                style={{ marginTop: "10px" }}
-                align="center"
-                color="primary"
-              >
-                Add A New Shift
-              </Typography>
-              <CardContent>
-                <TableContainer component={Paper}>
-                  <Table aria-label="member table">
-                    <TableBody>
-                      <TableRow key="headers1">
-                        <TableCell component="th" scope="row">
-                          Date
-                        </TableCell>
-                        <TableCell component="th" scope="row">
-                          Start Time
-                        </TableCell>
-                        <TableCell component="th" scope="row">
-                          End Time
-                        </TableCell>
-                      </TableRow>
-                      <TableRow key="fillable1">
-                        <TableCell component="th" scope="row">
-                          <input
-                            style={{ margin: "10px", width: "120px" }}
-                            fullWidth
-                            label="Date"
-                            variant="standard"
-                            type="date"
-                            margin="large"
-                            onChange={onShiftDateChange}
-                            value={state.sfiftDate}
-                            required
-                          />
-                        </TableCell>
-                        <TableCell component="th" scope="row">
-                          <TextField
-                            id="start-time-field"
-                            required
-                            onChange={onShiftStartChange}
-                            value={state.shiftStart}
-                            label="Start Time"
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell component="th" scope="row">
-                          <TextField
-                            id="end-time-field"
-                            required
-                            onChange={onShiftEndChange}
-                            value={state.shiftEnd}
-                            label="End Time"
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          scope="row"
-                          style={{ width: 200 }}
-                        >
-                          <Button
-                            color="primary"
-                            variant="outlined"
-                            onClick={addShift}
-                            disabled={
-                              !state.shiftDate ||
-                              !state.shiftStart ||
-                              !state.shiftEnd
-                            }
-                          >
-                            ADD
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>
-
-              <Typography variant="h4" color="primary">
-                Employee Found!
-              </Typography>
-              <Table aria-label="member table">
-                <TableBody>
-                  <TableRow key="headers1">
-                    <TableCell component="th" scope="row">
-                      Manager ID
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Employee ID
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Department
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      First Name
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Last Name
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Email
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      DOB
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Start Date
-                    </TableCell>
-                  </TableRow>
-                  <TableRow key="headers2">
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="editmanagerid-field"
-                        value={state.emanagerid}
-                        fullWidth
-                        disabled="true"
-                      />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="editempid-field"
-                        value={state.eempid}
-                        fullWidth
-                        disabled="true"
-                      />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="editdepartment-field"
-                        value={state.edepartment}
-                        fullWidth
-                        disabled="true"
-                      />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="editfname-field"
-                        value={state.efirstname}
-                        fullWidth
-                        disabled="true"
-                      />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="editlname-field"
-                        value={state.elastname}
-                        fullWidth
-                        disabled="true"
-                      />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="email-field"
-                        value={state.eemail}
-                        fullWidth
-                        disabled="true"
-                      />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="dob-field"
-                        value={state.edob}
-                        fullWidth
-                        disabled="true"
-                      />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="startdate-field"
-                        value={state.estartdate}
-                        fullWidth
-                        disabled="true"
-                      />
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              <Table aria-label="member table">
-                <TableBody>
-                  <TableRow key="headers1">
-                    <TableCell component="th" scope="row">
-                      Day
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Shift Start
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      Shift End
-                    </TableCell>
-                  </TableRow>
-                  {state.shifts.map((row) => (
-                    <TableRow key={state.shifts.indexOf(row)}>
+          <div>
+            <Typography
+              variant="h4"
+              style={{ marginTop: "10px" }}
+              align="center"
+              color="primary"
+            >
+              Add A New Shift
+            </Typography>
+            <CardContent>
+              <TableContainer component={Paper}>
+                <Table aria-label="member table">
+                  <TableBody>
+                    <TableRow key="headers1">
                       <TableCell component="th" scope="row">
-                        {row.date}
+                        Date
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {row.starttime}
+                        Start Time
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {row.endtime}
+                        End Time
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                    <TableRow key="fillable1">
+                      <TextField
+                        style={{ margin: "10px", width: "120px" }}
+                        fullWidth
+                        label="Employee ID"
+                        variant="standard"
+                        margin="dense"
+                        size="small"
+                        onChange={onEmployeeAddIdChange}
+                        required
+                      />
+                      <TableCell component="th" scope="row">
+                        <input
+                          style={{ margin: "10px", width: "120px" }}
+                          fullWidth
+                          label="Date"
+                          variant="standard"
+                          type="date"
+                          margin="large"
+                          onChange={onShiftDateChange}
+                          value={state.sfiftDate}
+                          required
+                        />
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <TextField
+                          id="start-time-field"
+                          required
+                          onChange={onShiftStartChange}
+                          value={state.shiftStart}
+                          label="Start Time"
+                          fullWidth
+                        />
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <TextField
+                          id="end-time-field"
+                          required
+                          onChange={onShiftEndChange}
+                          value={state.shiftEnd}
+                          label="End Time"
+                          fullWidth
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        style={{ width: 200 }}
+                      >
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          onClick={addShift}
+                          disabled={
+                            !state.shiftDate ||
+                            !state.shiftStart ||
+                            !state.shiftEnd
+                          }
+                        >
+                          ADD
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+            <Typography
+              variant="h4"
+              style={{ marginTop: "10px" }}
+              align="center"
+              color="primary"
+            >
+              Manage Shifts
+            </Typography>
+            <div
+              style={{
+                borderStyle: "solid",
+                borderRadius: "70px",
+                borderWidth: "1px",
+                margin: "10px",
+              }}
+            >
+              <div style={{ margintop: "50px" }}>
+                <TextField
+                  style={{ margin: "10px", width: "120px" }}
+                  fullWidth
+                  label="Employee ID"
+                  variant="standard"
+                  margin="dense"
+                  size="small"
+                  onChange={onEmployeeIdChange}
+                  required
+                />
+                <Button
+                  style={{ margin: "10px", width: "120px" }}
+                  color="secondary"
+                  variant="outlined"
+                  onClick={() => choseEmployee({ employeeChosen: true })}
+                >
+                  View Shifts
+                </Button>
+              </div>
+              <div style={{ margintop: "50px" }}>
+                <Button
+                  style={{ margin: "10px", width: "120px" }}
+                  color="secondary"
+                  variant="outlined"
+                  onClick={initialize}
+                >
+                  Open Edit Shifts
+                </Button>
+                <TextField
+                  id="edit-field"
+                  onChange={onDeleteIdChange}
+                  value={state.editid}
+                  label="Delete Shift By Id #"
+                />
+                <Button
+                  style={{ margin: "10px", width: "120px", color: "red" }}
+                  variant="outlined"
+                  onClick={deleteShift}
+                >
+                  Delete
+                </Button>
+                <UpdateModal onClose={fetchShiftInfo} show={state.show} />
+              </div>
             </div>
-          )}
+            {state.employeeChosen && (
+              <Typography variant="h4" color="primary">
+                Showing Shifts For Employee #{state.employeeid}
+              </Typography>
+            )}
+            <Typography
+              variant="h4"
+              style={{ margin: "10px", marginTop: "40px" }}
+              align="center"
+              color="primary"
+            >
+              View Shifts
+            </Typography>
+            <Table aria-label="member table">
+              <TableBody>
+                <TableRow key="headers1">
+                  <TableCell component="th" scope="row">
+                    Shift ID
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Employee ID
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Day
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Shift Start
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    Shift End
+                  </TableCell>
+                </TableRow>
+                {state.shifts.map((row) => (
+                  <TableRow key={state.shifts.indexOf(row)}>
+                    <TableCell component="th" scope="row">
+                      {row.shiftid}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.empid}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.date}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.starttime}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.endtime}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </form>
       ) : (
         <Typography color="secondary">Not logged in</Typography>

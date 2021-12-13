@@ -62,12 +62,9 @@ const Shifts = (props) => {
 
   const addShift = async (e) => {
     try {
-<<<<<<< HEAD
       console.log(
         `{addshift(empid:${state.employeeaddid},date:${state.shiftDate},starttime:${state.shiftStart},endtime:${state.shiftEnd}){shiftid,empid,date,starttime,endtime}}`
       );
-=======
->>>>>>> 5559d3a5223c58f281e4a11304eee3a679483be9
       let response = await fetch(GRAPHURL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -76,7 +73,6 @@ const Shifts = (props) => {
         }),
       });
       let payload = await response.json();
-<<<<<<< HEAD
       // fetchShiftInfo();
 
       let shiftToAdd = {
@@ -91,9 +87,6 @@ const Shifts = (props) => {
         shifts: joined,
       });
       console.log(payload.data.addshift.shiftid);
-=======
-      fetchShiftInfo();
->>>>>>> 5559d3a5223c58f281e4a11304eee3a679483be9
     } catch (error) {
       console.log(error);
     }
@@ -122,10 +115,7 @@ const Shifts = (props) => {
         found: true,
       });
 
-<<<<<<< HEAD
       console.log(payload.data.getemployeebyID.managerid);
-=======
->>>>>>> 5559d3a5223c58f281e4a11304eee3a679483be9
     } catch (error) {
       console.log(error);
     }
@@ -173,10 +163,7 @@ const Shifts = (props) => {
       });
       let payload = await response.json();
 
-<<<<<<< HEAD
       console.log(payload.data.getallshifts);
-=======
->>>>>>> 5559d3a5223c58f281e4a11304eee3a679483be9
       setState({
         shifts: payload.data.getallshifts.filter(
           (shift) => shift.empid === state.employeeid

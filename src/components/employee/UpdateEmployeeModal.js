@@ -27,7 +27,7 @@ const UpdateEmployeeModal = (props) => {
     email: "",
     startdate: "",
     dob: "",
-    editid: null,    
+    editid: null,
     show: props.show,
   };
   //modal variables
@@ -59,19 +59,19 @@ const UpdateEmployeeModal = (props) => {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          query: ` {getspecificemployee(empid:${employee}){managerid,department,empid,firstname,lastname,dob,email,startdate}}`,
+          query: ` {getemployeebyID(empid:${employee}){managerid,department,empid,firstname,lastname,email,dob,startdate}}`,
         }),
       });
       let payload = await response.json();
       setState({
-        managerid: payload.data.getspecificemployee.managerid,
-        department: payload.data.getspecificemployee.department,
-        empid: payload.data.getspecificemployee.empid,
-        firstname: payload.data.getspecificemployee.firstname,
-        lastname: payload.data.getspecificemployee.lastname,
-        email: payload.data.getspecificemployee.email,
-        dob: payload.data.getspecificemployee.dob,
-        startdate: payload.data.getspecificemployee.startdate,
+        managerid: payload.data.getemployeebyID.managerid,
+        department: payload.data.getemployeebyID.department,
+        empid: payload.data.getemployeebyID.empid,
+        firstname: payload.data.getemployeebyID.firstname,
+        lastname: payload.data.getemployeebyID.lastname,
+        email: payload.data.getemployeebyID.email,
+        dob: payload.data.getemployeebyID.dob,
+        startdate: payload.data.getemployeebyID.startdate,
       });
     } catch (error) {
       console.log(error);
